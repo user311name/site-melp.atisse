@@ -1,0 +1,359 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999;
+
+  width: 100%;
+  height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 5vw;
+
+  background: rgba(17, 16, 15, 0.86);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.logo {
+  position: relative;
+  z-index: 1000001;
+
+  color: #f1eadf;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+
+  letter-spacing: 0.15em;
+
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.logo span {
+  font-weight: 300;
+  opacity: 0.5;
+}
+
+/* =========================
+   DESKTOP
+   ========================= */
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.desktopNav a {
+  color: #b8afa4;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+
+  letter-spacing: 0.06em;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.desktopNav a:hover {
+  color: #ffffff;
+}
+
+.desktopContact {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 12px 17px;
+
+  border: 1px solid rgba(241, 234, 223, 0.14);
+
+  color: #f1eadf;
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 10px;
+
+  text-decoration: none;
+
+  transition: all 0.25s ease;
+}
+
+.desktopContact:hover {
+  background: #f1eadf;
+  color: #11100f;
+}
+
+/* =========================
+   BOUTON MOBILE
+   ========================= */
+
+.menuButton {
+  display: none;
+
+  position: relative;
+  z-index: 1000002;
+
+  width: 46px;
+  height: 46px;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid rgba(241, 234, 223, 0.25);
+  border-radius: 50%;
+
+  background: #11100f;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.hamburger {
+  width: 21px;
+  height: 16px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger span {
+  display: block;
+
+  width: 100%;
+  height: 1.5px;
+
+  background: #f1eadf;
+
+  border-radius: 2px;
+}
+
+.closeIcon {
+  width: 23px;
+  height: 23px;
+
+  position: relative;
+}
+
+.closeIcon::before,
+.closeIcon::after {
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 24px;
+  height: 1.5px;
+
+  background: #f1eadf;
+}
+
+.closeIcon::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.closeIcon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* =========================
+   MENU MOBILE
+   ========================= */
+
+.mobileMenu {
+  display: none;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 800px) {
+  .header {
+    height: 70px;
+    padding: 0 5vw;
+  }
+
+  .desktopNav,
+  .desktopContact {
+    display: none;
+  }
+
+  .menuButton {
+    display: flex;
+  }
+
+  .mobileMenu {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    z-index: 999998;
+
+    width: 100%;
+    height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 105px 7vw 30px;
+
+    background: #11100f;
+
+    overflow-y: auto;
+
+    animation: menuOpen 0.25s ease-out;
+  }
+
+  @keyframes menuOpen {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  .mobileTop {
+    display: flex;
+    justify-content: space-between;
+
+    color: #6e6862;
+
+    font-family: "DM Sans", sans-serif;
+    font-size: 9px;
+
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .mobileLinks {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    margin-top: auto;
+    margin-bottom: auto;
+
+    padding: 35px 0;
+  }
+
+  .mobileLinks a {
+    display: flex;
+    align-items: baseline;
+
+    color: #f1eadf;
+
+    font-family: "Cormorant Garamond", serif;
+
+    font-size: clamp(40px, 11vw, 62px);
+    font-weight: 400;
+
+    line-height: 0.88;
+
+    letter-spacing: -0.035em;
+
+    text-decoration: none;
+  }
+
+  .mobileLinks a:active {
+    opacity: 0.6;
+  }
+
+  .number {
+    width: 28px;
+
+    margin-right: 10px;
+
+    flex-shrink: 0;
+
+    color: #625c56;
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 8px;
+
+    letter-spacing: 0.08em;
+  }
+
+  .mobileContact {
+    display: flex !important;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 8px;
+
+    color: #c9b9a5 !important;
+  }
+
+  .mobileContact svg {
+    margin-left: 5px;
+  }
+
+  .mobileBottom {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    color: #625d57;
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 9px;
+
+    letter-spacing: 0.12em;
+
+    text-transform: uppercase;
+  }
+}
+
+/* =========================
+   PETIT TELEPHONE
+   ========================= */
+
+@media (max-width: 420px) {
+  .header {
+    height: 68px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .menuButton {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mobileMenu {
+    padding-left: 7vw;
+    padding-right: 7vw;
+  }
+
+  .mobileLinks {
+    gap: 15px;
+  }
+
+  .mobileLinks a {
+    font-size: clamp(37px, 11vw, 50px);
+  }
+}

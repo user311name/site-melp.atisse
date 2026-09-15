@@ -1,26 +1,737 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap");
+
+/* =========================================================
+   MELP.ATISSE — GLOBAL
+   ========================================================= */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --black: #11100f;
+  --black-2: #181614;
+  --cream: #f1eadf;
+  --cream-2: #e5dbce;
+  --white: #fffaf4;
+  --muted: #9b9288;
+  --line: rgba(241, 234, 223, 0.14);
+  --accent: #ad4b4b;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--black);
+  color: var(--cream);
+  font-family: "DM Sans", sans-serif;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: "DM Sans", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  outline: none;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--cream);
+  color: var(--black);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+
+  width: 100%;
+  height: 82px;
+
+  padding: 0 5vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: rgba(17, 16, 15, 0.78);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.brand {
+  position: relative;
+  z-index: 10003;
+
+  display: inline-flex;
+  align-items: center;
+
+  color: var(--cream);
+
+  font-size: 18px;
+  line-height: 1;
+
+  letter-spacing: 0.15em;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.brand i {
+  font-style: normal;
+  font-weight: 300;
+  opacity: 0.5;
+}
+
+
+/* =========================================================
+   NAVIGATION DESKTOP
+   ========================================================= */
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.desktop-nav a {
+  position: relative;
+
+  color: #b8afa4;
+
+  font-size: 10px;
+  line-height: 1;
+
+  letter-spacing: 0.06em;
+
+  transition: color 0.25s ease;
+}
+
+.desktop-nav a::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -7px;
+
+  width: 0;
+  height: 1px;
+
+  background: var(--cream);
+
+  transition: width 0.3s ease;
+}
+
+.desktop-nav a:hover {
+  color: #ffffff;
+}
+
+.desktop-nav a:hover::after {
+  width: 100%;
+}
+
+
+/* =========================================================
+   BOUTON DEVIS DESKTOP
+   ========================================================= */
+
+.header-contact {
+  position: relative;
+  z-index: 10003;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  min-height: 42px;
+
+  padding: 12px 17px;
+
+  border: 1px solid var(--line);
+
+  color: var(--cream);
+
+  font-size: 10px;
+  line-height: 1;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.header-contact:hover {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--black);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   BOUTON MENU MOBILE
+   ========================================================= */
+
+.mobile-menu-button {
+  display: none;
+
+  position: relative;
+  z-index: 10003;
+
+  width: 46px;
+  height: 46px;
+
+  margin: 0;
+  padding: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(241, 234, 223, 0.22);
+  border-radius: 50%;
+
+  background: rgba(17, 16, 15, 0.95);
+
+  color: var(--cream);
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  touch-action: manipulation;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.mobile-menu-button svg {
+  display: block;
+
+  width: 24px;
+  height: 24px;
+
+  pointer-events: none;
+}
+
+.mobile-menu-button:hover {
+  background: rgba(241, 234, 223, 0.1);
+  border-color: rgba(241, 234, 223, 0.35);
+}
+
+.mobile-menu-button:active {
+  transform: scale(0.94);
+}
+
+
+/* =========================================================
+   MENU MOBILE
+   ========================================================= */
+
+.mobile-navigation {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 10000;
+
+  width: 100%;
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  padding:
+    calc(105px + env(safe-area-inset-top))
+    8vw
+    calc(32px + env(safe-area-inset-bottom));
+
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(173, 75, 75, 0.1),
+      transparent 28%
+    ),
+    #11100f;
+
+  color: var(--cream);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+
+  transform: translateX(100%);
+
+  transition:
+    transform 0.45s cubic-bezier(0.77, 0, 0.18, 1),
+    opacity 0.3s ease,
+    visibility 0s linear 0.45s;
+}
+
+
+/* =========================================================
+   MENU OUVERT
+   ========================================================= */
+
+.site-header.menu-open .mobile-navigation {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+
+  transform: translateX(0);
+
+  transition:
+    transform 0.45s cubic-bezier(0.77, 0, 0.18, 1),
+    opacity 0.3s ease,
+    visibility 0s linear 0s;
+}
+
+
+/* =========================================================
+   CONTENU MENU
+   ========================================================= */
+
+.mobile-menu-inner {
+  width: 100%;
+  min-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* =========================================================
+   HAUT MENU
+   ========================================================= */
+
+.mobile-menu-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 35px;
+}
+
+.mobile-label {
+  display: block;
+
+  color: #6e6862;
+
+  font-size: 9px;
+  line-height: 1;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+}
+
+.mobile-menu-number {
+  color: #6e6862;
+
+  font-size: 9px;
+  line-height: 1;
+
+  letter-spacing: 0.2em;
+}
+
+
+/* =========================================================
+   LIENS MOBILE
+   ========================================================= */
+
+.mobile-menu-links {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0;
+
+  margin: auto 0;
+}
+
+.mobile-menu-links a {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 58px;
+
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 2px;
+
+  color: var(--cream);
+
+  border-bottom: 1px solid rgba(241, 234, 223, 0.1);
+
+  transition:
+    background 0.25s ease,
+    padding-left 0.25s ease,
+    color 0.25s ease;
+}
+
+.mobile-menu-links a:first-child {
+  border-top: 1px solid rgba(241, 234, 223, 0.1);
+}
+
+.mobile-menu-links a:active {
+  background: rgba(255, 255, 255, 0.04);
+  padding-left: 8px;
+}
+
+.mobile-menu-links a span {
+  color: #6e6862;
+
+  font-size: 8px;
+
+  letter-spacing: 0.1em;
+}
+
+.mobile-menu-links a strong {
+  font-family: "Cormorant Garamond", serif;
+
+  font-size: 27px;
+  font-weight: 400;
+
+  line-height: 1;
+
+  letter-spacing: -0.02em;
+}
+
+.mobile-menu-links a svg {
+  color: #a89786;
+}
+
+
+/* =========================================================
+   BOUTON DEVIS MOBILE
+   ========================================================= */
+
+.mobile-menu-links .mobile-menu-contact {
+  margin-top: 18px;
+
+  min-height: 64px;
+
+  padding: 0 16px;
+
+  background: var(--cream);
+
+  color: var(--black);
+
+  border: none;
+}
+
+.mobile-menu-links .mobile-menu-contact span {
+  color: #897b6e;
+}
+
+.mobile-menu-links .mobile-menu-contact svg {
+  color: var(--black);
+}
+
+
+/* =========================================================
+   BAS MENU
+   ========================================================= */
+
+.mobile-bottom {
+  padding-top: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  color: #6c665f;
+
+  font-size: 8px;
+
+  line-height: 1.4;
+
+  letter-spacing: 0.11em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.site-footer {
+  padding: 80px 7vw 30px;
+
+  background: #0a0908;
+}
+
+.footer-main {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 60px;
+
+  padding-bottom: 70px;
+}
+
+.footer-brand {
+  max-width: 300px;
+}
+
+.footer-brand .brand {
+  display: inline-flex;
+}
+
+.footer-brand p {
+  margin-top: 25px;
+
+  color: #67615b;
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+.footer-links {
+  display: flex;
+
+  gap: 100px;
+}
+
+.footer-column {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.footer-column span {
+  margin-bottom: 8px;
+
+  color: #5c5752;
+
+  font-size: 9px;
+
+  letter-spacing: 0.15em;
+
+  text-transform: uppercase;
+}
+
+.footer-column a {
+  color: #989087;
+
+  font-size: 11px;
+
+  transition: color 0.25s ease;
+}
+
+.footer-column a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-top: 25px;
+
+  border-top: 1px solid var(--line);
+
+  color: #55504b;
+
+  font-size: 9px;
+
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+  .site-header {
+    height: 70px;
+
+    padding: 0 6vw;
+
+    background: rgba(17, 16, 15, 0.94);
+  }
+
+  .desktop-nav,
+  .header-contact {
+    display: none !important;
+  }
+
+  .mobile-menu-button {
+    display: flex !important;
+  }
+
+  .mobile-navigation {
+    padding:
+      calc(92px + env(safe-area-inset-top))
+      8vw
+      calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-menu-links a {
+    min-height: 58px;
+  }
+
+  .mobile-menu-links a strong {
+    font-size: clamp(25px, 7vw, 32px);
+  }
+
+  .site-footer {
+    padding: 65px 6vw 25px;
+  }
+
+  .footer-main {
+    flex-direction: column;
+
+    gap: 50px;
+
+    padding-bottom: 50px;
+  }
+
+  .footer-links {
+    gap: 45px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+}
+
+
+/* =========================================================
+   PETITS TELEPHONES
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+  .site-header {
+    padding: 0 5vw;
+  }
+
+  .brand {
+    font-size: 16px;
+  }
+
+  .mobile-menu-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mobile-navigation {
+    padding-left: 7vw;
+    padding-right: 7vw;
+  }
+
+  .mobile-menu-links a {
+    min-height: 55px;
+  }
+
+  .mobile-menu-links a strong {
+    font-size: clamp(23px, 7vw, 29px);
+  }
+
+  .mobile-bottom {
+    font-size: 7px;
+  }
+}
+
+
+/* =========================================================
+   TRES PETITS TELEPHONES
+   ========================================================= */
+
+@media (max-width: 350px) {
+
+  .brand {
+    font-size: 14px;
+  }
+
+  .mobile-menu-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mobile-menu-links a {
+    min-height: 52px;
+  }
+
+  .mobile-menu-links a strong {
+    font-size: 22px;
+  }
 }
