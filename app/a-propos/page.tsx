@@ -12,7 +12,7 @@ const values = [
     text: "Des créations faites pour être découvertes, dégustées et partagées.",
     tags: "PARTAGE   /   PLAISIR   /   CONVIVIALITÉ",
     image:
-      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1400&q=90",
+      "/images/gateau-fraises.png",
   },
   {
     number: "02",
@@ -20,7 +20,7 @@ const values = [
     text: "Chaque geste compte. Chaque détail participe à l’expérience.",
     tags: "RIGUEUR   /   EXIGENCE   /   MAÎTRISE",
     image:
-      "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1400&q=90",
+      "/images/number-cake-choux.png",
   },
   {
     number: "03",
@@ -28,7 +28,7 @@ const values = [
     text: "Des recettes libres, élégantes et imaginées autour de chaque projet.",
     tags: "INSPIRATION   /   AUDACE   /   SUR-MESURE",
     image:
-      "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=1400&q=90",
+      "/images/number-cake-chocolat-fleurs.png",
   },
   {
     number: "04",
@@ -36,7 +36,7 @@ const values = [
     text: "De bons produits, une cuisine authentique et un travail fait avec passion.",
     tags: "TRANSPARENCE   /   AUTHENTICITÉ   /   PASSION",
     image:
-      "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1400&q=90",
+      "/images/traiteur-planche-festive.png",
   },
 ];
 
@@ -51,10 +51,10 @@ export default function APropos() {
 
       <section className="values-intro">
         <div className="values-intro-left">
-          <span className="small-label">NOS VALEURS</span>
+          <span className="small-label">MES VALEURS</span>
 
           <h1>
-            Ce qui nous
+            Ce qui me
             <br />
             <em>guide.</em>
           </h1>
@@ -73,6 +73,17 @@ export default function APropos() {
         <div className="values-intro-right">
           <span>MELP.ATISSE</span>
           <span>04 / VALEURS</span>
+        </div>
+      </section>
+
+      <section className="about-story">
+        <div className="about-story-photo"><img src="/images/carte-photo-1.png" alt="Création pâtissière photographiée dans l’univers Melp.atisse"/></div>
+        <div className="about-story-copy">
+          <span className="small-label">LE PARCOURS DE MÉLISSA</span>
+          <h2>La pâtisserie, <em>avec intention.</em></h2>
+          <p>Mélissa Garnier est pâtissière, cheffe privée et traiteur à La Plaine-sur-Mer. Elle est formée au BTM Pâtissier-Chocolatier-Glacier-Confiseur-Traiteur.</p>
+          <p>Avec Melp.atisse, elle imagine des pâtisseries fines sur commande, en travaillant les textures, les saveurs et le soin du décor. Chaque création prend forme au fil des échanges autour de l’occasion et des envies.</p>
+          <Link href="/contact">Échanger avec Mélissa <ArrowUpRight size={16}/></Link>
         </div>
       </section>
 
@@ -153,6 +164,18 @@ export default function APropos() {
           Parlons de votre projet
           <ArrowUpRight size={18} strokeWidth={1.4} />
         </Link>
+      </section>
+
+      <section className="brand-card-showcase">
+        <div>
+          <span className="small-label">L’IDENTITÉ MELP.ATISSE</span>
+          <h2>Une carte pensée<br/><em>à son image.</em></h2>
+          <p>Les couleurs, les formes et les créations de la carte de visite inspirent l’univers du site.</p>
+        </div>
+        <div className="brand-card-pair">
+          <img src="/images/melp-carte-recto.png" alt="Recto de la carte de visite Melp.atisse"/>
+          <img src="/images/melp-carte-verso.png" alt="Verso de la carte de visite Melp.atisse avec coordonnées"/>
+        </div>
       </section>
 
       {/* =====================================================

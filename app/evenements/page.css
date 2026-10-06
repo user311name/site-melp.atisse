@@ -660,3 +660,4 @@
   .calendar-card{padding-left:7px;padding-right:7px}
   .calendar-day{width:36px;height:40px}
 }
+@media(max-width:700px){.events-hero{min-height:650px!important;padding:105px 20px 55px!important}.events-hero h1{font-size:clamp(42px,11vw,60px)!important;line-height:.96!important}.events-showcase .showcase-main{height:300px!important}.events-showcase .showcase-small{height:220px!important}}

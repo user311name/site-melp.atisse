@@ -1747,4 +1747,4 @@
   .request-benefits {
     margin-top: 28px !important;
   }
-}
+}@media(max-width:700px){.contact-hero,.contact-hero-inner{min-height:650px!important}.contact-hero{padding-top:95px!important}.hero-pastry-showcase{width:min(185px,54vw)!important;height:245px!important}.contact-cards-stage{height:320px!important;top:265px!important}.contact-reference,.contact-reference-overlay{min-height:640px!important}.contact-reference .contact-card{max-width:170px!important;max-height:260px!important}}

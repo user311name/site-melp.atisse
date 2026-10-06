@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   ArrowRight,
   CakeSlice,
@@ -9,6 +9,7 @@ import {
   Check,
   ChefHat,
   Clock3,
+  Gift,
   Mail,
   MapPin,
   Sparkles,
@@ -24,7 +25,7 @@ const prestations = [
     title: "Pâtisserie",
     description: "Desserts, mignardises & créations sucrées",
     image:
-      "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=90",
+      "/images/gateau-framboises-fleurs.png",
     icon: CakeSlice,
   },
   {
@@ -32,7 +33,7 @@ const prestations = [
     title: "Gâteau personnalisé",
     description: "Anniversaire, mariage ou occasion spéciale",
     image:
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=90",
+      "/images/number-cake-marin.png",
     icon: Sparkles,
   },
   {
@@ -40,7 +41,7 @@ const prestations = [
     title: "Table sucrée",
     description: "Une table complète autour de vos envies",
     image:
-      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=90",
+      "/images/number-cake-fruits-rouges.png",
     icon: CakeSlice,
   },
   {
@@ -48,7 +49,7 @@ const prestations = [
     title: "Dîner privé",
     description: "Une expérience culinaire à domicile",
     image:
-      "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=90",
+      "/images/carte-photo-2.png",
     icon: ChefHat,
   },
   {
@@ -56,9 +57,14 @@ const prestations = [
     title: "Événement",
     description: "Mariage, réception, entreprise...",
     image:
-      "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=900&q=90",
+      "/images/traiteur-planche-festive.png",
     icon: UtensilsCrossed,
   },
+  { number: "06", title: "Atelier privé", description: "Une séance gourmande adaptée à votre groupe", image: "/images/number-cake-choux.png", icon: CakeSlice },
+  { number: "07", title: "Épicerie gourmande", description: "Des douceurs à offrir ou à partager", image: "/images/entremets-chocolat-noisettes.png", icon: Gift },
+  { number: "08", title: "Carte cadeau", description: "Offrir une création ou une expérience", image: "/images/gateau-fraises.png", icon: Gift },
+  { number: "09", title: "Collaboration professionnelle", description: "Imaginer un partenariat avec Mélissa", image: "/images/traiteur-planche-festive.png", icon: ChefHat },
+  { number: "10", title: "Demande particulière", description: "Une date ou un projet à étudier", image: "/images/number-cake-marin.png", icon: Sparkles },
 ];
 
 const bottomCards = [
@@ -67,21 +73,21 @@ const bottomCards = [
     title: "Gourmandise",
     subtitle: "Des créations généreuses",
     image:
-      "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=1000&q=90",
+      "/images/number-cake-choux.png",
   },
   {
     number: "02",
     title: "Élégance",
     subtitle: "Une table pensée dans les détails",
     image:
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1000&q=90",
+      "/images/number-cake-tropical.png",
   },
   {
     number: "03",
     title: "Sur mesure",
     subtitle: "Une création qui vous ressemble",
     image:
-      "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=1000&q=90",
+      "/images/entremets-chocolat-noisettes.png",
   },
 ];
 
@@ -89,8 +95,20 @@ export default function ContactPage() {
   const [selected, setSelected] = useState("Pâtisserie");
   const [sent, setSent] = useState(false);
 
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("prestation");
+    const match = prestations.find(item => item.title.toLocaleLowerCase() === requested?.toLocaleLowerCase());
+    if (match) setSelected(match.title);
+  }, []);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const details = new FormData(event.currentTarget);
+    details.set("Prestation", selected);
+    const body = Array.from(details.entries())
+      .map(([label, value]) => `${label} : ${value}`)
+      .join("\n");
+    window.location.href = `mailto:melp.atisse.contact@gmail.com?subject=${encodeURIComponent("Demande depuis le site Melp.atisse")}&body=${encodeURIComponent(body)}`;
     setSent(true);
   }
 
@@ -225,7 +243,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <strong>Réponse sous 24 à 48h</strong>
+                  <strong>Réponse personnalisée</strong>
                   <span>Après étude de votre demande</span>
                 </div>
               </div>
@@ -385,7 +403,7 @@ export default function ContactPage() {
               </div>
 
               <button className="submit-button" type="submit">
-                {sent ? "Demande envoyée" : "Envoyer ma demande"}
+                {sent ? "Messagerie ouverte" : "Préparer mon e-mail"}
 
                 {sent ? (
                   <Check size={17} />
@@ -400,10 +418,10 @@ export default function ContactPage() {
                 <Check size={18} />
 
                 <div>
-                  <strong>Merci pour votre demande.</strong>
+                  <strong>Votre e-mail est prêt.</strong>
 
                   <span>
-                    MELP.ATISSE reviendra vers vous rapidement.
+                    Vérifiez l’ouverture de votre messagerie puis envoyez le message pour transmettre votre demande à Mélissa.
                   </span>
                 </div>
               </div>
@@ -506,8 +524,8 @@ export default function ContactPage() {
 
           <h3>Une question ?</h3>
 
-          <a href="mailto:contact@melpatisse.fr">
-            contact@melpatisse.fr
+          <a href="mailto:melp.atisse.contact@gmail.com">
+            melp.atisse.contact@gmail.com
             <ArrowRight size={14} />
           </a>
         </div>
@@ -519,7 +537,15 @@ export default function ContactPage() {
 
           <h3>La Plaine-sur-Mer</h3>
 
-          <p>Loire-Atlantique & alentours</p>
+          <p>6 rue Léon Fourneau<br/>44770 La Plaine-sur-Mer</p>
+          <a href="https://maps.google.com/?q=6+rue+L%C3%A9on+Fourneau+44770+La+Plaine-sur-Mer" target="_blank" rel="noreferrer">Voir l’adresse sur la carte <ArrowRight size={14}/></a>
+        </div>
+
+        <div className="info-block">
+          <MapPin size={19} />
+          <span>TÉLÉPHONE</span>
+          <h3>Échanger de vive voix</h3>
+          <a href="tel:+33651369133">06 51 36 91 33 <ArrowRight size={14}/></a>
         </div>
 
         <div className="info-block">

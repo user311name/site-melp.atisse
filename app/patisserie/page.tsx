@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { pastryCatalog, type PastryProduct } from "@/lib/pastry-catalog";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -14,203 +15,25 @@ import {
 import Header from "@/components/Header";
 import "./page.css";
 
-type Product = {
-  id: number;
-  category: string;
-  name: string;
-  eyebrow: string;
-  description: string;
-  image: string;
-  price: string;
-  ingredients: string[];
-  allergens: string[];
-  notes: string[];
-  conservation: string;
-  weight: string;
-  popular?: boolean;
-};
 
-const products: Product[] = [
-  {
-    id: 1,
-    category: "Tartes",
-    name: "Tarte Fraîche",
-    eyebrow: "Fruits · Vanille · Sablé",
-    description:
-      "Une tarte fine et élégante composée d'un sablé croustillant, d'une crème légère à la vanille et de fruits frais sélectionnés selon la saison.",
-    image:
-      "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1600&q=90",
-    price: "À partir de 32 €",
-    ingredients: [
-      "Farine de blé",
-      "Beurre",
-      "Sucre",
-      "Œufs",
-      "Vanille",
-      "Fruits frais",
-      "Crème",
-    ],
-    allergens: ["Gluten", "Lait", "Œufs"],
-    notes: ["Frais", "Vanillé", "Fruité"],
-    conservation: "À conserver au réfrigérateur et à déguster dans les 24 h.",
-    weight: "4 à 6 personnes",
-    popular: true,
-  },
-  {
-    id: 2,
-    category: "Entremets",
-    name: "Velours Chocolat",
-    eyebrow: "Chocolat noir · Praliné · Cacao",
-    description:
-      "Un entremets intense et fondant où le chocolat noir rencontre un cœur praliné et une texture mousseuse particulièrement légère.",
-    image:
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1600&q=90",
-    price: "À partir de 42 €",
-    ingredients: [
-      "Chocolat noir",
-      "Cacao",
-      "Praliné noisette",
-      "Crème",
-      "Beurre",
-      "Œufs",
-      "Sucre",
-    ],
-    allergens: ["Lait", "Œufs", "Fruits à coque"],
-    notes: ["Intense", "Praliné", "Fondant"],
-    conservation:
-      "À conserver au réfrigérateur. Sortir 15 min avant dégustation.",
-    weight: "6 à 8 personnes",
-    popular: true,
-  },
-  {
-    id: 3,
-    category: "Cookies",
-    name: "Cookie Signature",
-    eyebrow: "Chocolat · Fleur de sel · Beurre",
-    description:
-      "Un cookie généreux au cœur fondant, légèrement croustillant sur les bords, avec du chocolat et une pointe de fleur de sel.",
-    image:
-      "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1600&q=90",
-    price: "À partir de 4 €",
-    ingredients: [
-      "Farine de blé",
-      "Beurre",
-      "Cassonade",
-      "Chocolat",
-      "Œufs",
-      "Fleur de sel",
-    ],
-    allergens: ["Gluten", "Lait", "Œufs"],
-    notes: ["Gourmand", "Fondant", "Chocolaté"],
-    conservation: "À conserver dans une boîte hermétique.",
-    weight: "1 pièce",
-  },
-  {
-    id: 4,
-    category: "Gâteaux",
-    name: "Nuage Vanille",
-    eyebrow: "Vanille · Crème · Biscuit moelleux",
-    description:
-      "Un gâteau aérien autour d'une vanille douce, d'un biscuit moelleux et d'une crème délicate. Une création pensée pour les grandes occasions.",
-    image:
-      "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1600&q=90",
-    price: "À partir de 45 €",
-    ingredients: [
-      "Farine de blé",
-      "Œufs",
-      "Sucre",
-      "Vanille",
-      "Crème",
-      "Beurre",
-    ],
-    allergens: ["Gluten", "Lait", "Œufs"],
-    notes: ["Doux", "Aérien", "Vanillé"],
-    conservation: "À conserver au réfrigérateur.",
-    weight: "6 à 10 personnes",
-  },
-  {
-    id: 5,
-    category: "Tartes",
-    name: "Caramel & Noisette",
-    eyebrow: "Caramel · Noisette · Sablé",
-    description:
-      "Une création généreuse autour d'un caramel onctueux, d'une crème de noisette et d'un sablé délicatement croustillant.",
-    image:
-      "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=1600&q=90",
-    price: "À partir de 38 €",
-    ingredients: [
-      "Farine de blé",
-      "Beurre",
-      "Noisette",
-      "Sucre",
-      "Crème",
-      "Œufs",
-    ],
-    allergens: ["Gluten", "Lait", "Œufs", "Fruits à coque"],
-    notes: ["Caramélisé", "Noisette", "Gourmand"],
-    conservation:
-      "À conserver au réfrigérateur et consommer sous 48 h.",
-    weight: "6 personnes",
-  },
-  {
-    id: 6,
-    category: "Entremets",
-    name: "Éclat Framboise",
-    eyebrow: "Framboise · Vanille · Chocolat blanc",
-    description:
-      "La fraîcheur de la framboise associée à une mousse vanillée et une touche de chocolat blanc pour une création délicate et équilibrée.",
-    image:
-      "https://images.unsplash.com/photo-1464195244916-405fa0a82545?auto=format&fit=crop&w=1600&q=90",
-    price: "À partir de 44 €",
-    ingredients: [
-      "Framboise",
-      "Vanille",
-      "Chocolat blanc",
-      "Crème",
-      "Œufs",
-      "Sucre",
-    ],
-    allergens: ["Lait", "Œufs"],
-    notes: ["Frais", "Acidulé", "Délicat"],
-    conservation: "À conserver au réfrigérateur.",
-    weight: "6 à 8 personnes",
-    popular: true,
-  },
-];
 
-const initialReviews = [
-  {
-    name: "Camille",
-    rating: 5,
-    text: "Une pâtisserie aussi belle que délicieuse. Tout était extrêmement fin.",
-    date: "Il y a 2 semaines",
-  },
-  {
-    name: "Sophie",
-    rating: 5,
-    text: "Le gâteau était magnifique et surtout vraiment excellent. Je recommande.",
-    date: "Il y a 1 mois",
-  },
-  {
-    name: "Julien",
-    rating: 5,
-    text: "Très belle découverte. Les textures et les saveurs sont incroyables.",
-    date: "Il y a 2 mois",
-  },
-];
+
+const initialReviews: { name: string; rating: number; text: string; date: string }[] = [];
 
 const categories = [
   "Toutes",
-  "Tartes",
-  "Entremets",
-  "Cookies",
   "Gâteaux",
+  "Number cakes",
+  "Entremets",
+  "Traiteur",
 ];
 
 export default function Patisserie() {
   const [activeCategory, setActiveCategory] = useState("Toutes");
+  const [catalog, setCatalog] = useState<PastryProduct[]>(pastryCatalog);
+  useEffect(() => { fetch("/api/site-content", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((content: { patisserie?: { products?: PastryProduct[] } } | null) => { if (content?.patisserie?.products?.length) setCatalog(content.patisserie.products); }).catch(() => undefined); }, []);
   const [selectedProduct, setSelectedProduct] =
-    useState<Product | null>(null);
+    useState<PastryProduct | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [reviews, setReviews] = useState(initialReviews);
   const [reviewName, setReviewName] = useState("");
@@ -221,13 +44,13 @@ export default function Patisserie() {
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === "Toutes") {
-      return products;
+      return catalog;
     }
 
-    return products.filter(
+    return catalog.filter(
       (product) => product.category === activeCategory,
     );
-  }, [activeCategory]);
+  }, [activeCategory, catalog]);
 
   const toggleFavorite = (id: number) => {
     setFavorites((current) =>
@@ -362,6 +185,8 @@ export default function Patisserie() {
           </p>
         </div>
 
+        <div className="warm-note">Fiches de présentation à valider avec Mélissa avant publication : recettes, formats, tarifs, allergènes, photos et disponibilité seront précisés produit par produit.</div>
+
         <div className="pas-filters">
           {categories.map((category) => (
             <button
@@ -452,7 +277,7 @@ export default function Patisserie() {
       <section className="pas-featured">
         <div className="pas-featured-image">
           <img
-            src={products[1].image}
+            src={catalog[1]?.image ?? pastryCatalog[1].image}
             alt="Velours Chocolat"
           />
 
@@ -482,7 +307,7 @@ export default function Patisserie() {
 
           <button
             type="button"
-            onClick={() => setSelectedProduct(products[1])}
+            onClick={() => setSelectedProduct(catalog[1] ?? pastryCatalog[1])}
           >
             Découvrir la signature
             <ArrowRight size={17} />
@@ -505,7 +330,7 @@ export default function Patisserie() {
           </div>
 
           <div className="pas-rating-summary">
-            <strong>5.0</strong>
+            <strong>{reviews.length ? "5.0" : "—"}</strong>
 
             <div>
               <div className="stars">
@@ -524,6 +349,9 @@ export default function Patisserie() {
         </div>
 
         <div className="pas-reviews-grid">
+          {reviews.length === 0 && (
+            <p className="pas-review-empty">Les avis clients seront affichés ici lorsqu’ils auront été recueillis et validés.</p>
+          )}
           {reviews.slice(0, 3).map((review, index) => (
             <article
               className="pas-review"
@@ -568,8 +396,8 @@ export default function Patisserie() {
       <section className="pas-custom">
         <div className="pas-custom-image">
           <img
-            src="https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=1800&q=90"
-            alt="Création pâtissière sur mesure"
+            src="/images/number-cake-tropical.png"
+            alt="Number cake personnalisé au décor tropical et chocolaté"
           />
         </div>
 
@@ -663,14 +491,14 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
-              src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1400&q=95"
-              alt="Viennoiseries artisanales"
+              src="/images/number-cake-vanille-fleurs.png"
+              alt="Number cake décoré de crème pochée et de fleurs"
             />
 
             <div className="pas-insta-overlay">
               <span className="pas-insta-number">01</span>
               <span className="pas-insta-caption">
-                Le savoir-faire
+                Number cake fleuri
               </span>
               <span className="pas-insta-open" aria-hidden="true">
                 <ArrowUpRight size={18} strokeWidth={1.3} />
@@ -685,14 +513,14 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
-              src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=1400&q=95"
-              alt="Tarte pâtissière artisanale"
+              src="/images/gateau-framboises-fleurs.png"
+              alt="Gâteau décoré de framboises et de fleurs"
             />
 
             <div className="pas-insta-overlay">
               <span className="pas-insta-number">02</span>
               <span className="pas-insta-caption">
-                Tarte & précision
+                Framboises & fleurs
               </span>
               <span className="pas-insta-open" aria-hidden="true">
                 <ArrowUpRight size={18} strokeWidth={1.3} />
@@ -707,14 +535,14 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
-              src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=1400&q=95"
-              alt="Gâteau pâtissier fait maison"
+              src="/images/number-cake-choux.png"
+              alt="Number cake garni de petits choux et de fleurs"
             />
 
             <div className="pas-insta-overlay">
               <span className="pas-insta-number">03</span>
               <span className="pas-insta-caption">
-                Création maison
+                Number cake aux choux
               </span>
               <span className="pas-insta-open" aria-hidden="true">
                 <ArrowUpRight size={18} strokeWidth={1.3} />
@@ -729,14 +557,14 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
-              src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1400&q=95"
-              alt="Dessert pâtissier gourmand"
+              src="/images/entremets-chocolat-noisettes.png"
+              alt="Entremets au décor chocolat et noisettes"
             />
 
             <div className="pas-insta-overlay">
               <span className="pas-insta-number">04</span>
               <span className="pas-insta-caption">
-                Le goût avant tout
+                Chocolat & noisettes
               </span>
               <span className="pas-insta-open" aria-hidden="true">
                 <ArrowUpRight size={18} strokeWidth={1.3} />
@@ -935,7 +763,7 @@ export default function Patisserie() {
                     : "Ajouter aux favoris"}
                 </button>
 
-                <Link href="/contact">
+                <Link href={`/commander?creation=${encodeURIComponent(selectedProduct.name)}`}>
                   Demander cette création
                   <ArrowRight size={17} />
                 </Link>
@@ -1055,3 +883,6 @@ export default function Patisserie() {
     </main>
   );
 }
+
+
+

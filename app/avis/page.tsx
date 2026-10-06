@@ -3,38 +3,7 @@ import { ArrowRight, Star } from "lucide-react";
 import Header from "@/components/Header";
 import "./page.css";
 
-const reviews = [
-  {
-    text: "Une création magnifique, aussi belle que délicieuse. Tout le monde a adoré.",
-    name: "Camille",
-    type: "Anniversaire",
-  },
-  {
-    text: "Une cheffe passionnée, à l'écoute et incroyablement créative. Une vraie expérience.",
-    name: "Marion",
-    type: "Dîner privé",
-  },
-  {
-    text: "Le gâteau était sublime. Les détails, les goûts, la présentation… tout était parfait.",
-    name: "Sarah",
-    type: "Événement",
-  },
-  {
-    text: "Une très belle découverte. Tout était pensé avec beaucoup de soin.",
-    name: "Julie",
-    type: "Pâtisserie",
-  },
-  {
-    text: "Une prestation au-delà de nos attentes. Nous recommandons sans hésiter.",
-    name: "Thomas",
-    type: "Réception",
-  },
-  {
-    text: "Des produits excellents et une vraie attention portée aux détails.",
-    name: "Claire",
-    type: "Anniversaire",
-  },
-];
+const reviews: { text: string; name: string; type: string }[] = [];
 
 export default function Avis() {
   return (
@@ -45,18 +14,18 @@ export default function Avis() {
         <span>05 / AVIS</span>
 
         <h1>
-          Ils en parlent
+          Vos mots font
           <br />
-          <i>mieux que moi.</i>
+          <i>vivre Melp.</i>
         </h1>
 
         <p>
-          Parce que la plus belle récompense reste celle de voir les gens
-          repartir avec le sourire.
+          Les retours de celles et ceux qui ont goûté les créations de Mélissa.
         </p>
       </section>
 
       <section className="reviews-grid">
+        {reviews.length === 0 && <div className="reviews-empty"><span className="warm-eyebrow">AVIS AUTHENTIQUES</span><h2>Les avis clients arrivent ici.</h2><p>Les témoignages seront publiés avec leurs vrais textes et l’accord de leurs auteurs. En attendant, consulte les avis publics ou partage ton expérience.</p><a href="https://maps.google.com/?q=Melp.atisse+6+rue+L%C3%A9on+Fourneau+44770+La+Plaine-sur-Mer" target="_blank" rel="noreferrer">Consulter les avis publics <ArrowRight size={16}/></a></div>}
         {reviews.map((review, index) => (
           <article key={review.name} className="review-item">
             <div className="review-stars">
@@ -91,7 +60,7 @@ export default function Avis() {
         </h2>
 
         <Link href="/contact">
-          Partager votre expérience
+          Écrire à Mélissa
           <ArrowRight size={17} />
         </Link>
       </section>

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./brand.css";
 
 export const metadata: Metadata = {
-  title: "MELP.ATISSE — Pâtisserie artisanale & Cheffe privée",
+  title: "Melp.atisse — Pâtisserie artisanale à La Plaine-sur-Mer",
   description:
-    "MELP.ATISSE — Pâtisserie artisanale, créations sur mesure et cuisine privée à La Plaine-sur-Mer et alentours.",
+    "Pâtisseries artisanales, ateliers gourmands, traiteur et cheffe privée à La Plaine-sur-Mer et dans le Pays de Retz.",
 };
 
 export default function RootLayout({
@@ -16,5 +17,5 @@ export default function RootLayout({
     <html lang="fr">
       <body>{children}</body>
     </html>
-  );
+  );  
 }

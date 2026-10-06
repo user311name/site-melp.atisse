@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# CMS uploads and editable production content
+/data/site-content.json
+/public/uploads/
+
+
+/data/orders.json
+/data/orders.json.tmp
+/data/orders.lock/
