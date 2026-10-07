@@ -113,7 +113,12 @@ export const defaultContent: SiteContent = {
 
 const dataFile = path.join(process.cwd(), "data", "site-content.json");
 const blobPath = "melp/site-content.json";
-export const isBlobStorageConfigured = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN || (process.env.VERCEL_OIDC_TOKEN && process.env.BLOB_STORE_ID));
+// Vercel exposes OIDC credentials to functions through request context/header at runtime,
+// so VERCEL_OIDC_TOKEN may not exist in process.env even when a Blob store is connected.
+export const isBlobStorageConfigured = () => Boolean(
+  process.env.BLOB_READ_WRITE_TOKEN ||
+  (process.env.BLOB_STORE_ID && (process.env.VERCEL === "1" || process.env.VERCEL_OIDC_TOKEN)),
+);
 export const isAllowedContentImage = (image: string) => image.startsWith("/images/") || image.startsWith("/uploads/") || image.startsWith("https://");
 
 export async function readSiteContent(): Promise<SiteContent> {
