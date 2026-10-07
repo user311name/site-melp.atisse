@@ -22,7 +22,7 @@ export default function Home() {
     <Header />
     <section className="home-hero">
       <div className="home-hero-copy">
-        <span className="home-kicker"><i /> {hero?.eyebrow || "Pâtissière · Cheffe privée · Traiteur · Ateliers"}</span>
+        <span className="home-kicker"><i /> {hero?.eyebrow || "Pâtissière · Traiteur · Cheffe privée · Atelier"}</span>
         <h1>{hero?.title || "De la gourmandise"}<br />à <em>{hero?.emphasis || "partager."}</em></h1>
         <p>{hero?.intro || "Des créations artisanales, de jolis moments autour d’une table et une attention portée à chaque détail."}</p>
         <div className="home-actions"><Link className="home-button" href={hero?.ctaUrl || "/patisserie"}>{hero?.ctaLabel || "Découvrir les créations"} <ArrowRight size={17}/></Link><Link className="home-text-link" href="/contact">Parler de votre projet <ArrowRight size={15}/></Link></div>

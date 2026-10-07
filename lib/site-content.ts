@@ -45,7 +45,7 @@ export type SiteContent = {
 const emptyPage = (label: string): EditablePage => ({ label, eyebrow: "", title: "", emphasis: "", intro: "", image: "", imageAlt: "", ctaLabel: "", ctaUrl: "", sections: [] });
 
 export const editablePages: Record<string, EditablePage> = {
-  accueil: { ...emptyPage("Accueil"), eyebrow: "Pâtissière · Cheffe privée · Traiteur · Ateliers", title: "De la gourmandise", emphasis: "à partager.", intro: "Des créations artisanales, de jolis moments autour d’une table et une attention portée à chaque détail.", image: "/images/number-cake-fruits-rouges.png", imageAlt: "Number cake décoré de fruits rouges et de fleurs, création Melp.atisse", ctaLabel: "Découvrir les créations", ctaUrl: "/patisserie" },
+  accueil: { ...emptyPage("Accueil"), eyebrow: "Pâtissière · Traiteur · Cheffe privée · Atelier", title: "De la gourmandise", emphasis: "à partager.", intro: "Des créations artisanales, de jolis moments autour d’une table et une attention portée à chaque détail.", image: "/images/number-cake-fruits-rouges.png", imageAlt: "Number cake décoré de fruits rouges et de fleurs, création Melp.atisse", ctaLabel: "Découvrir les créations", ctaUrl: "/patisserie" },
   patisserie: { ...emptyPage("Pâtisserie"), eyebrow: "PÂTISSERIE ARTISANALE", title: "La gourmandise", emphasis: "comme signature.", intro: "Des créations imaginées, façonnées et dressées à la main, directement depuis l’atelier MELP.ATISSE.", image: "/images/gateau-framboises-fleurs.png", imageAlt: "Pâtisserie artisanale Melp.atisse", ctaLabel: "Découvrir les créations", ctaUrl: "#creations" },
   epicerie: emptyPage("Épicerie gourmande"), ateliers: { ...emptyPage("Ateliers"), eyebrow: "ATELIERS DE PÂTISSERIE", title: "On met la main", emphasis: "à la pâte ?", intro: "Des ateliers de pâtisserie pour enfants et adultes, chez vous, sur demande et sur devis.", image: "/images/number-cake-choux.png", imageAlt: "Number cake aux petits choux, création Melp.atisse", sections: [
     { id: "atelier-prive", title: "Chez vous", body: "Ateliers privés pour enfants et adultes, organisés sur demande et sur devis après validation du lieu et des conditions d’accueil.", image: "", imageAlt: "", linkText: "Demander un devis", linkUrl: "/contact?prestation=Atelier%20privé" },
@@ -141,7 +141,11 @@ export async function readSiteContent(): Promise<SiteContent> {
       siteMedia: saved.siteMedia && typeof saved.siteMedia === "object" ? saved.siteMedia : {},
       pages: Object.fromEntries(Object.entries(editablePages).map(([key, page]) => {
         const savedPage = saved.pages?.[key];
-        return [key, savedPage ? { ...page, ...savedPage, sections: Array.isArray(savedPage.sections) ? savedPage.sections : page.sections } : page];
+      const mergedPage = savedPage ? { ...page, ...savedPage, sections: Array.isArray(savedPage.sections) ? savedPage.sections : page.sections } : page;
+      if (key === "accueil" && mergedPage.eyebrow === "Pâtissière · Cheffe privée · Traiteur · Ateliers") {
+        mergedPage.eyebrow = "Pâtissière · Traiteur · Cheffe privée · Atelier";
+      }
+      return [key, mergedPage];
       })),
       epicerie: { ...defaultContent.epicerie, ...saved.epicerie },
       patisserie: { products: saved.patisserie?.products ?? defaultContent.patisserie.products },

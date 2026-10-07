@@ -156,15 +156,15 @@ main[class*='-page'] h1 em,main[class*='-page'] h2 em,main[class*='-page'] h3 em
 
 /* Identité finale Melp.atisse : chocolat, crème, rose franc et accents soleil. */
 :root {
-  --melp-cream: #fffaf2;
-  --melp-cream-soft: #f7eadb;
-  --melp-chocolate: #4b2818;
-  --melp-cocoa: #76513a;
-  --melp-pink: #ed7897;
-  --melp-berry: #8f123d;
-  --melp-peach: #f6a77b;
-  --melp-orange: #ed8a32;
-  --melp-sunshine: #f3c94f;
+  --melp-cream: #fffaf3;
+  --melp-cream-soft: #faeddf;
+  --melp-chocolate: #482516;
+  --melp-cocoa: #72503b;
+  --melp-pink: #f27b9c;
+  --melp-berry: #8e173d;
+  --melp-peach: #ffc092;
+  --melp-orange: #f28a28;
+  --melp-sunshine: #ffd34f;
   --black: var(--melp-chocolate);
   --black-2: var(--melp-cream-soft);
   --cream: var(--melp-chocolate);
@@ -186,6 +186,23 @@ html, body {
 }
 body, button, input, textarea, select {
   font-family: 'Lora', Georgia, serif !important;
+}
+
+/* Titres souples et contrastés sur toutes les rubriques, y compris commande et fidélité. */
+main :is(h1, h2, h3, h4), .admin-shell :is(h1, h2, h3, h4), .admin-login-card h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -.018em !important;
+  text-transform: none !important;
+}
+main :is(h1 em, h2 em, h3 em, h4 em) {
+  color: var(--melp-berry) !important;
+  font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+main :is(p, li, label, small), .admin-shell :is(p, label, small) {
+  font-family: 'Lora', Georgia, serif;
 }
 
 /* Le nom de marque garde une forme ronde ; les titres apportent le contraste chic. */
@@ -313,6 +330,19 @@ main[class*='-page'] input, main[class*='-page'] textarea, main[class*='-page'] 
 .site-header .mobile-navigation-links > a > strong { font-family: 'Cormorant Garamond', Georgia, serif !important; font-weight: 700 !important; }
 .site-header .mobile-navigation-links > a > svg { color: var(--melp-berry) !important; }
 
+/* Les accents bonbon et soleil ponctuent l’ensemble sans assombrir les fonds. */
+.home-kicker i, .home-stamp, .home-ribbon i, .home-pickup-band > svg,
+.collab-group-heading > svg { color: var(--melp-orange) !important; }
+.home-stamp { background-color: rgba(242,123,156,.2) !important; }
+.home-ribbon, .home-pickup-band { background: var(--melp-chocolate) !important; }
+.home-ribbon i, .home-pickup-band > svg, .footer-column span { color: var(--melp-sunshine) !important; }
+.home-art-note { background: #fffaf3 !important; border-color: rgba(242,123,156,.32) !important; }
+.home-art-note > span { color: var(--melp-berry) !important; }
+.home-kicker, .warm-eyebrow, .pas-eyebrow { color: var(--melp-berry) !important; }
+.home-button, .warm-button, .warm-form button, .pas-hero-link, .cta-button,
+.submit-button, .main-button, .bottom-button { background: var(--melp-berry) !important; }
+.home-button:hover, .warm-button:hover, .pas-hero-link:hover, .cta-button:hover { background: var(--melp-chocolate) !important; }
+
 @media (max-width: 800px) {
   .home-hero, .warm-hero, .pas-hero, .events-hero, .simple-hero,
   .contact-hero, .reviews-hero { background-color: var(--melp-cream) !important; }
@@ -326,3 +356,5 @@ main[class*='-page'] input, main[class*='-page'] textarea, main[class*='-page'] 
 .admin-shell :is(button, .admin-upload-button, .admin-secondary), .admin-login-card form button {
   font-family: 'Lora', Georgia, serif !important;
 }
+
+.admin-shell { --melp-cream: #fffaf3; --melp-cream-soft: #faeddf; --melp-chocolate: #482516; }
