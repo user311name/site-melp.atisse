@@ -39,8 +39,11 @@ export async function listOrders() { return exclusive(readUnlocked); }
 
 function validPickup(date: string, time: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return false;
+  const parsedDate = new Date(`${date}T12:00:00.000Z`);
+  if (Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date) return false;
   const day = new Date(`${date}T12:00:00Z`).getUTCDay();
   const [hours, minutes] = time.split(":").map(Number);
+  if (hours > 23 || minutes > 59) return false;
   const minute = hours * 60 + minutes;
   return (day === 5 && minute >= 960 && minute < 1140 || day === 6 && minute >= 540 && minute < 840) && minutes % 10 === 0;
 }
@@ -67,24 +70,38 @@ export async function createHold(date: string, time: string) {
   });
 }
 
-export async function submitOrder(input: { holdId?: string; kind: "pickup" | "special"; name: string; email: string; phone: string; products: string; notes: string }) {
+export async function submitOrder(input: { holdId?: string; kind: "pickup" | "special"; specialDate?: string; specialTime?: string; name: string; email: string; phone: string; products: string; notes: string }) {
   if (![input.name, input.email, input.phone, input.products].every(value => value.trim())) throw new Error("Complète les coordonnées et le détail de la commande.");
+  const specialDate = input.specialDate?.trim() ?? "";
+  const specialTime = input.specialTime?.trim() ?? "";
+  if (input.kind === "special") {
+    const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(specialDate) ? new Date(`${specialDate}T00:00:00.000Z`) : null;
+    if (!parsedDate || Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== specialDate) throw new Error("Indique une date souhaitée valide pour ta demande particulière.");
+    const parisToday = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    if (specialDate < parisToday) throw new Error("La date souhaitée ne peut pas être déjà passée.");
+    if (specialTime && (!/^\d{2}:\d{2}$/.test(specialTime) || Number(specialTime.slice(0, 2)) > 23 || Number(specialTime.slice(3, 5)) > 59)) throw new Error("Indique une heure souhaitée valide.");
+  }
   return exclusive(async () => {
     const orders = await readUnlocked();
     let order = input.kind === "pickup" ? orders.find(entry => entry.id === input.holdId && entry.status === "held" && Date.parse(entry.holdExpiresAt ?? "") > Date.now()) : undefined;
     if (input.kind === "pickup" && !order) throw new Error("Le créneau a expiré. Choisis à nouveau un horaire.");
-    if (!order) { order = { id: randomUUID(), kind: "special", status: "awaiting_confirmation", createdAt: new Date().toISOString(), name: "", email: "", phone: "", products: "", notes: "", paymentStatus: "not_paid" }; orders.push(order); }
+    if (!order) { order = { id: randomUUID(), kind: "special", status: "awaiting_confirmation", createdAt: new Date().toISOString(), date: input.kind === "special" ? specialDate : undefined, time: input.kind === "special" && specialTime ? specialTime : undefined, name: "", email: "", phone: "", products: "", notes: "", paymentStatus: "not_paid" }; orders.push(order); }
     Object.assign(order, { status: "awaiting_confirmation" as const, holdExpiresAt: undefined, name: input.name.trim().slice(0, 120), email: input.email.trim().slice(0, 200), phone: input.phone.trim().slice(0, 50), products: input.products.trim().slice(0, 3000), notes: input.notes.trim().slice(0, 3000) });
     await writeUnlocked(orders); return order;
   });
 }
 
 export async function updateOrder(id: string, status: PickupOrder["status"]) {
+  const schedule = (await readSiteContent()).schedule;
   return exclusive(async () => {
     const orders = await readUnlocked();
     const order = orders.find(entry => entry.id === id);
     if (!order || status === "held") return null;
-    if (status === "confirmed" && order.date && order.time && orders.some(entry => entry.id !== id && entry.date === order.date && entry.time === order.time && entry.status === "confirmed")) throw new Error("Un autre retrait occupe déjà ce créneau.");
+    if (status === "confirmed" && order.date) {
+      const active = orders.filter(entry => entry.id !== id && entry.date === order.date && (entry.status === "confirmed" || entry.status === "awaiting_confirmation" || entry.status === "held" && Date.parse(entry.holdExpiresAt ?? "") > Date.now()));
+      if (schedule.maxOrdersPerDay !== null && active.length >= schedule.maxOrdersPerDay) throw new Error("La capacité de production est atteinte pour cette date. Vérifie les autres demandes avant de confirmer.");
+      if (order.time && active.some(entry => entry.time === order.time)) throw new Error("Un autre retrait ou une demande en attente occupe déjà ce créneau.");
+    }
     order.status = status; await writeUnlocked(orders); return order;
   });
 }

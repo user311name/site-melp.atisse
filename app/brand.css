@@ -358,3 +358,177 @@ main[class*='-page'] input, main[class*='-page'] textarea, main[class*='-page'] 
 }
 
 .admin-shell { --melp-cream: #fffaf3; --melp-cream-soft: #faeddf; --melp-chocolate: #482516; }
+
+/* Dernier accord avec la carte Melp.atisse : casse du logo fidèle, contraste doux
+   entre les titres éditoriaux, l’écriture manuscrite et les textes très lisibles. */
+.site-header .brand,
+.site-header .brand span,
+.site-header .brand i,
+.home-wordmark,
+.warm-footer > a,
+.about-page .footer-brand .brand {
+  font-family: 'Baloo 2', 'Trebuchet MS', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -.025em !important;
+  text-transform: none !important;
+}
+.site-header .brand { font-size: 24px !important; }
+.site-header .brand span, .site-header .brand i { font-size: inherit !important; }
+.site-header .brand small {
+  top: 25px !important;
+  width: max-content;
+  max-width: 245px;
+  color: #72503b !important;
+  font-family: 'Lora', Georgia, serif !important;
+  font-size: clamp(5px, .58vw, 7px) !important;
+  font-weight: 500 !important;
+  letter-spacing: .045em !important;
+  line-height: 1.2;
+}
+.home-wordmark, .warm-footer > a, .about-page .footer-brand .brand { font-size: 24px !important; }
+.about-page .footer-brand .brand { color: var(--melp-chocolate) !important; }
+.about-page .footer-brand .brand i { color: var(--melp-berry) !important; }
+
+main :is(h1, h2) {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 500 !important;
+  letter-spacing: -.012em !important;
+}
+ :is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) :is(h1, h2) {
+  font-weight: 500 !important;
+  letter-spacing: -.012em !important;
+}
+ :is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) :is(h3, h4) {
+  font-weight: 600 !important;
+}
+main :is(h3, h4) {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 600 !important;
+}
+main :is(h1 em, h2 em, h3 em) {
+  font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+  font-weight: 600 !important;
+}
+main :is(p, li, label, input, textarea, select) {
+  font-family: 'Lora', Georgia, serif;
+}
+.home-slogan {
+  color: var(--melp-berry) !important;
+  font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+  font-size: clamp(24px, 2.5vw, 31px) !important;
+  font-weight: 600 !important;
+}
+.home-kicker i, .home-stamp, .offer-icon, .collab-group-heading > svg {
+  color: var(--melp-berry) !important;
+  background-color: rgba(242, 123, 156, .22) !important;
+}
+.home-ribbon i, .home-pickup-band > svg, .footer-column span {
+  color: var(--melp-sunshine) !important;
+}
+@media (max-width: 800px) {
+  .site-header .brand { font-size: 21px !important; }
+  .site-header .brand small { top: 22px !important; max-width: 215px; font-size: 5.5px !important; }
+}
+
+/* Accents plus visibles, comme sur la carte de visite, sans assombrir les pages. */
+.melp-home .home-ribbon {
+  background: #f5d2cf !important;
+  color: var(--melp-chocolate) !important;
+}
+.melp-home .home-ribbon i { color: #f28a28 !important; }
+.melp-home .home-stamp {
+  background: #f27b9c !important;
+  border-color: #fffaf3 !important;
+  color: var(--melp-chocolate) !important;
+}
+.melp-home .home-stamp small { color: var(--melp-chocolate) !important; }
+.melp-home .home-art-note { border: 1px solid rgba(242,123,156,.48) !important; }
+.melp-home .home-art-note em,
+.melp-home .home-text-link:hover,
+.service-links > a:hover strong { color: var(--melp-berry) !important; }
+.melp-home .home-pickup-band > svg { color: #ffd34f !important; }
+
+/* Palette de marque visible et cohérente, reprise des couleurs de la carte. */
+:root {
+  --melp-cream: #fff5e8;
+  --melp-cream-soft: #f2dfc9;
+  --melp-chocolate: #3f2114;
+  --melp-cocoa: #674631;
+  --melp-pink: #f45d8d;
+  --melp-berry: #8f173c;
+  --melp-peach: #ffc091;
+  --melp-orange: #f07824;
+  --melp-sunshine: #ffd43b;
+  --black: var(--melp-chocolate);
+  --black-2: var(--melp-cream-soft);
+  --cream: var(--melp-chocolate);
+  --cream-2: #e8cdb2;
+  --white: var(--melp-cream);
+  --muted: var(--melp-cocoa);
+  --accent: var(--melp-berry);
+  --chocolate: var(--melp-chocolate);
+  --berry: var(--melp-berry);
+  --pink: var(--melp-pink);
+  --peach: var(--melp-peach);
+  --sunshine: var(--melp-sunshine);
+}
+html, body { background: var(--melp-cream) !important; color: var(--melp-chocolate) !important; }
+:is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) {
+  background: var(--melp-cream) !important;
+  color: var(--melp-chocolate) !important;
+}
+.melp-home .home-hero,
+.warm-hero, .pas-hero, .events-hero, .simple-hero, .contact-hero, .reviews-hero {
+  background: radial-gradient(ellipse at 88% 12%, rgba(244,93,141,.16), transparent 27%),
+              radial-gradient(ellipse at 78% 36%, rgba(240,120,36,.14), transparent 35%),
+              var(--melp-cream) !important;
+}
+.melp-home .home-offers, .melp-home .home-services,
+.warm-content, .pas-catalogue, .about-values,
+.chef-page .experiences-section, .chef-page .process-section,
+.chef-page .chef-section, .chef-page .cta-section,
+.reviews-grid, .pas-featured, .events-showcase {
+  background-color: var(--melp-cream-soft) !important;
+}
+.melp-home .home-ribbon {
+  background: var(--melp-pink) !important;
+  color: var(--melp-chocolate) !important;
+}
+.melp-home .home-ribbon i { color: var(--melp-berry) !important; }
+.melp-home .home-stamp {
+  background: var(--melp-sunshine) !important;
+  border: 2px solid var(--melp-pink) !important;
+  color: var(--melp-chocolate) !important;
+}
+.melp-home .home-stamp small { color: var(--melp-chocolate) !important; }
+.melp-home .home-kicker i { background: var(--melp-orange) !important; }
+.melp-home .home-pickup-band, .site-footer, .contact-footer, .footer {
+  background: var(--melp-chocolate) !important;
+}
+.melp-home .offer-icon, .collab-group-heading > svg {
+  background: var(--melp-pink) !important;
+  color: var(--melp-berry) !important;
+}
+.warm-note, .pas-catalogue .warm-note {
+  background: #fff0d7 !important;
+  border-left-color: var(--melp-orange) !important;
+}
+.warm-button, .home-button, .warm-form button,
+.pas-hero-link, .cta-button, .submit-button, .main-button, .bottom-button {
+  background: var(--melp-berry) !important;
+  border-color: var(--melp-berry) !important;
+}
+.warm-button:hover, .home-button:hover, .warm-form button:hover,
+.pas-hero-link:hover, .cta-button:hover, .submit-button:hover,
+.main-button:hover, .bottom-button:hover {
+  background: var(--melp-chocolate) !important;
+  border-color: var(--melp-chocolate) !important;
+}
+.warm-card, .offer-card, .pas-product, .process-card, .contact-card,
+.calendar-card, .request-form, .invitation-card, .managed-page-section,
+.experience-card, .value-card {
+  border-color: rgba(143,23,60,.18) !important;
+  box-shadow: 0 12px 32px rgba(63,33,20,.09) !important;
+}
+.home-art-note { border-color: rgba(244,93,141,.6) !important; }
+.home-art-note > span, .home-art-note em { color: var(--melp-berry) !important; }

@@ -25,7 +25,8 @@ export async function POST(request: Request) {
     if (body.action === "hold" && typeof body.date === "string" && typeof body.time === "string") return NextResponse.json(await createHold(body.date, body.time), { status: 201 });
     if (body.action === "release" && typeof body.holdId === "string") { await releaseHold(body.holdId); return NextResponse.json({ released: true }); }
     if (body.action === "submit" && (body.kind === "pickup" || body.kind === "special")) {
-      const order = await submitOrder({ holdId: typeof body.holdId === "string" ? body.holdId : undefined, kind: body.kind, name: String(body.name ?? ""), email: String(body.email ?? ""), phone: String(body.phone ?? ""), products: String(body.products ?? ""), notes: String(body.notes ?? "") });
+      const fullName = [body.firstName, body.lastName].map(value => typeof value === "string" ? value.trim() : "").filter(Boolean).join(" ") || String(body.name ?? "");
+      const order = await submitOrder({ holdId: typeof body.holdId === "string" ? body.holdId : undefined, kind: body.kind, specialDate: typeof body.specialDate === "string" ? body.specialDate : "", specialTime: typeof body.specialTime === "string" ? body.specialTime : "", name: fullName, email: String(body.email ?? ""), phone: String(body.phone ?? ""), products: String(body.products ?? ""), notes: String(body.notes ?? "") });
       return NextResponse.json({ id: order.id, status: order.status, message: "Demande transmise. Mélissa doit confirmer la disponibilité avant que la commande soit définitive." }, { status: 201 });
     }
     return NextResponse.json({ error: "Action inconnue." }, { status: 400 });

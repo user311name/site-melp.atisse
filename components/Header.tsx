@@ -17,7 +17,7 @@ export default function Header() {
   const close = () => setOpen(false);
 
   return <header className={`site-header ${open ? "menu-open" : ""}`}>
-    <Link href="/" className="brand" onClick={close}><span>MELP</span><i>.ATISSE</i><small>PÂTISSERIE ARTISANALE</small></Link>
+    <Link href="/" className="brand" onClick={close}><span>Melp</span><i>.atisse</i><small>Pâtissière · Traiteur · Cheffe privée · Atelier</small></Link>
     <nav className="desktop-nav" aria-label="Navigation principale">{links.map(([label, href]) => <Link href={href} key={href}>{label}</Link>)}</nav>
     <Link href="/contact" className="header-contact">Une demande ? <ArrowRight size={15}/></Link>
     <button type="button" className="mobile-menu-button" aria-label={open ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X/> : <Menu/>}</button>

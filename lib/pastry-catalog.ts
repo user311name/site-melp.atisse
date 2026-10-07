@@ -11,6 +11,7 @@ export type PastryProduct = {
   notes: string[];
   conservation: string;
   weight: string;
+  availability?: string;
   popular?: boolean;
 };
 

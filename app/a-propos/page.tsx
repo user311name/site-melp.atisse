@@ -83,9 +83,9 @@ export default function APropos() {
         <div className="about-story-photo"><img src={cmsPage?.image || "/images/carte-photo-1.png"} alt={cmsPage?.imageAlt || "Création pâtissière photographiée dans l’univers Melp.atisse"}/></div>
         <div className="about-story-copy">
           <span className="small-label">LE PARCOURS DE MÉLISSA</span>
-          <h2>La pâtisserie, <em>avec intention.</em></h2>
-          <p>Mélissa Garnier est pâtissière, cheffe privée et traiteur à La Plaine-sur-Mer. Elle est formée au BTM Pâtissier-Chocolatier-Glacier-Confiseur-Traiteur.</p>
-          <p>Avec Melp.atisse, elle imagine des pâtisseries fines sur commande, en travaillant les textures, les saveurs et le soin du décor. Chaque création prend forme au fil des échanges autour de l’occasion et des envies.</p>
+          <h2>{cmsPage?.storyHeading || "La pâtisserie, avec intention."}</h2>
+          <p>{cmsPage?.storyHistory || "Parcours et formation à compléter avec Mélissa."}</p>
+          <p>{cmsPage?.storyPractice || "Façon de travailler, vision et approche de la gourmandise à compléter avec Mélissa."}</p>
           <Link href="/contact">Échanger avec Mélissa <ArrowUpRight size={16}/></Link>
         </div>
       </section>
@@ -189,7 +189,7 @@ export default function APropos() {
         <div className="footer-main">
           <div className="footer-brand">
             <div className="brand">
-              MELP<i>.ATISSE</i>
+              Melp<i>.atisse</i>
             </div>
 
             <p>Pâtisserie artisanale & cuisine privée.</p>

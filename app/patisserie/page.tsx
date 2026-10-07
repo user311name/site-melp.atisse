@@ -34,11 +34,12 @@ export default function Patisserie() {
   const [activeCategory, setActiveCategory] = useState("Toutes");
   const [catalog, setCatalog] = useState<PastryProduct[]>(pastryCatalog);
   const [cmsPage, setCmsPage] = useState<EditablePage | null>(null);
-  useEffect(() => { fetch("/api/site-content", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((content: { patisserie?: { products?: PastryProduct[] }; pages?: Record<string, EditablePage> } | null) => { if (content?.patisserie?.products?.length) setCatalog(content.patisserie.products); if (content?.pages?.patisserie) setCmsPage(content.pages.patisserie); }).catch(() => undefined); }, []);
+  useEffect(() => { fetch("/api/site-content", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((content: { patisserie?: { products?: PastryProduct[] }; pages?: Record<string, EditablePage> } | null) => { if (Array.isArray(content?.patisserie?.products)) setCatalog(content.patisserie.products); if (content?.pages?.patisserie) setCmsPage(content.pages.patisserie); }).catch(() => undefined); }, []);
   const [selectedProduct, setSelectedProduct] =
     useState<PastryProduct | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
-  const [reviews, setReviews] = useState(initialReviews);
+  const reviews = initialReviews;
+  const averageRating = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
   const [reviewName, setReviewName] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
@@ -46,12 +47,13 @@ export default function Patisserie() {
   const [reviewOpen, setReviewOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
+    const published = catalog.filter(product => product.name.trim());
     if (activeCategory === "Toutes") {
-      return catalog;
+      return published;
     }
 
     return catalog.filter(
-      (product) => product.category === activeCategory,
+      (product) => product.name.trim() && product.category === activeCategory,
     );
   }, [activeCategory, catalog]);
 
@@ -75,21 +77,9 @@ export default function Patisserie() {
       return;
     }
 
-    setReviews((current) => [
-      {
-        name: reviewName.trim(),
-        rating: reviewRating,
-        text: reviewText.trim(),
-        date: "À l'instant",
-      },
-      ...current,
-    ]);
-
-    setReviewName("");
-    setReviewText("");
-    setReviewRating(5);
-    setReviewMessage("Merci pour votre avis ♡");
-    setReviewOpen(false);
+    const body = `Prénom : ${reviewName.trim()}\nNote : ${reviewRating}/5\nAvis : ${reviewText.trim()}`;
+    window.location.href = `mailto:melp.atisse.contact@gmail.com?subject=${encodeURIComponent("Avis client · Melp.atisse")}&body=${encodeURIComponent(body)}`;
+    setReviewMessage("Votre messagerie s’ouvre pour envoyer cet avis. Il ne sera publié qu’après validation de Mélissa.");
   };
 
   return (
@@ -281,7 +271,7 @@ export default function Patisserie() {
         <div className="pas-featured-image">
           <img
             src={catalog[1]?.image ?? pastryCatalog[1].image}
-            alt="Velours Chocolat"
+            alt={catalog[1]?.name || "Création pâtissière Melp.atisse"}
           />
 
           <div className="pas-featured-floating">
@@ -333,18 +323,10 @@ export default function Patisserie() {
           </div>
 
           <div className="pas-rating-summary">
-            <strong>{reviews.length ? "5.0" : "—"}</strong>
+            <strong>{reviews.length ? averageRating.toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : "—"}</strong>
 
             <div>
-              <div className="stars">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    size={16}
-                    fill="currentColor"
-                  />
-                ))}
-              </div>
+              {reviews.length ? <div className="stars">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill={star <= Math.round(averageRating) ? "currentColor" : "none"} />)}</div> : <span>Aucun avis publié</span>}
 
               <span>{reviews.length} avis</span>
             </div>
@@ -744,6 +726,11 @@ export default function Patisserie() {
                 </p>
               </div>
 
+              <div className="pas-conservation">
+                <span>DISPONIBILITÉ</span>
+                <p>{selectedProduct.availability || "À confirmer avec Mélissa au moment de la demande."}</p>
+              </div>
+
               <div className="pas-modal-actions">
                 <button
                   type="button"
@@ -882,7 +869,7 @@ export default function Patisserie() {
                 type="submit"
                 className="pas-submit-review"
               >
-                Publier mon avis
+                Préparer mon avis
                 <Send size={16} />
               </button>
             </form>

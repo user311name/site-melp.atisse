@@ -12,12 +12,13 @@ export type GroceryProduct = {
   allergens: string;
   format: string;
   price: string;
+  availability?: string;
   image: string;
   imageAlt: string;
 };
 
-export type EditableSection = { id: string; title: string; body: string; image: string; imageAlt: string; linkText: string; linkUrl: string };
-export type EditablePage = { label: string; eyebrow: string; title: string; emphasis: string; intro: string; image: string; imageAlt: string; ctaLabel: string; ctaUrl: string; sections: EditableSection[] };
+export type EditableSection = { id: string; title: string; body: string; image: string; imageAlt: string; linkText: string; linkUrl: string; category?: string; location?: string; date?: string };
+export type EditablePage = { label: string; eyebrow: string; title: string; emphasis: string; intro: string; image: string; imageAlt: string; ctaLabel: string; ctaUrl: string; storyHeading: string; storyHistory: string; storyPractice: string; sections: EditableSection[] };
 
 export type { PastryProduct } from "@/lib/pastry-catalog";
 
@@ -42,14 +43,16 @@ export type SiteContent = {
   };
 };
 
-const emptyPage = (label: string): EditablePage => ({ label, eyebrow: "", title: "", emphasis: "", intro: "", image: "", imageAlt: "", ctaLabel: "", ctaUrl: "", sections: [] });
+const emptyPage = (label: string): EditablePage => ({ label, eyebrow: "", title: "", emphasis: "", intro: "", image: "", imageAlt: "", ctaLabel: "", ctaUrl: "", storyHeading: "", storyHistory: "", storyPractice: "", sections: [] });
 
 export const editablePages: Record<string, EditablePage> = {
-  accueil: { ...emptyPage("Accueil"), eyebrow: "Pâtissière · Traiteur · Cheffe privée · Atelier", title: "De la gourmandise", emphasis: "à partager.", intro: "Des créations artisanales, de jolis moments autour d’une table et une attention portée à chaque détail.", image: "/images/number-cake-fruits-rouges.png", imageAlt: "Number cake décoré de fruits rouges et de fleurs, création Melp.atisse", ctaLabel: "Découvrir les créations", ctaUrl: "/patisserie" },
+  accueil: { ...emptyPage("Accueil"), eyebrow: "Pâtissière · Traiteur · Cheffe privée · Atelier", title: "De la gourmandise", emphasis: "à partager,", intro: "Des créations artisanales, de jolis moments autour d’une table et une attention portée à chaque détail.", image: "/images/number-cake-fruits-rouges.png", imageAlt: "Number cake décoré de fruits rouges et de fleurs, création Melp.atisse", ctaLabel: "Découvrir les créations", ctaUrl: "/patisserie", sections: [
+    { id: "home-video-links", title: "Les créations en mouvement", body: "Les vidéos de pâtisserie et d’ateliers seront ajoutées ici dès que leurs liens seront disponibles.", image: "", imageAlt: "", linkText: "", linkUrl: "" },
+  ] },
   patisserie: { ...emptyPage("Pâtisserie"), eyebrow: "PÂTISSERIE ARTISANALE", title: "La gourmandise", emphasis: "comme signature.", intro: "Des créations imaginées, façonnées et dressées à la main, directement depuis l’atelier MELP.ATISSE.", image: "/images/gateau-framboises-fleurs.png", imageAlt: "Pâtisserie artisanale Melp.atisse", ctaLabel: "Découvrir les créations", ctaUrl: "#creations" },
-  epicerie: emptyPage("Épicerie gourmande"), ateliers: { ...emptyPage("Ateliers"), eyebrow: "ATELIERS DE PÂTISSERIE", title: "On met la main", emphasis: "à la pâte ?", intro: "Des ateliers de pâtisserie pour enfants et adultes, chez vous, sur demande et sur devis.", image: "/images/number-cake-choux.png", imageAlt: "Number cake aux petits choux, création Melp.atisse", sections: [
+  epicerie: emptyPage("Épicerie gourmande"), ateliers: { ...emptyPage("Ateliers"), eyebrow: "ATELIERS DE PÂTISSERIE", title: "On met la main", emphasis: "à la pâte ?", intro: "Des ateliers de pâtisserie pour enfants et adultes, chez vous, sur demande et sur devis.", image: "", imageAlt: "", sections: [
     { id: "atelier-prive", title: "Chez vous", body: "Ateliers privés pour enfants et adultes, organisés sur demande et sur devis après validation du lieu et des conditions d’accueil.", image: "", imageAlt: "", linkText: "Demander un devis", linkUrl: "/contact?prestation=Atelier%20privé" },
-    { id: "atelier-partenaire", title: "À Savenay avec C’est moi qui l’ai fait", body: "Les ateliers du partenaire ont lieu le premier samedi du mois. Consultez son site pour découvrir le thème et réserver.", image: "", imageAlt: "", linkText: "Programme et réservation", linkUrl: "https://cmqlf.com/categorie/boutique-cest-moi-qui-lai-fait/ateliers-cuisine/" },
+    { id: "atelier-partenaire", title: "À Savenay avec C’est moi qui l’ai fait", body: "Consulte le site du partenaire pour le thème et les informations pratiques.", image: "", imageAlt: "", linkText: "Programme et réservation", linkUrl: "https://cmqlf.com/categorie/boutique-cest-moi-qui-lai-fait/ateliers-cuisine/", date: "Chaque premier samedi du mois", location: "Savenay" },
   ] },
   "cheffe-privee": { ...emptyPage("Traiteur & cheffe privée"), eyebrow: "TRAITEUR & CHEFFE PRIVÉE", title: "La cuisine", emphasis: "chez vous.", intro: "Une expérience culinaire sur mesure, directement chez vous.", sections: [
     { id: "experience-diner", title: "Dîner privé", body: "Un menu imaginé pour vous, chez vous, autour de vos envies.", image: "/images/traiteur-planche-festive.png", imageAlt: "Dîner privé préparé par Melp.atisse", linkText: "", linkUrl: "" },
@@ -58,14 +61,20 @@ export const editablePages: Record<string, EditablePage> = {
   ] },
   "cartes-cadeaux": { ...emptyPage("Cartes cadeaux"), eyebrow: "UNE ATTENTION À OFFRIR", title: "Un moment", emphasis: "à savourer.", intro: "Une carte cadeau pour offrir une création pâtissière ou un atelier gourmand à partager.", image: "/images/gateau-fraises.png", imageAlt: "Création pâtissière fleurie à offrir" },
   commander: { ...emptyPage("Commander"), eyebrow: "COMMANDE À EMPORTER", title: "Une douceur", emphasis: "pour bientôt.", intro: "Envoyez votre demande de commande et choisissez un horaire de retrait à La Plaine-sur-Mer. Prévoir au moins quatre jours à l’avance.", image: "/images/number-cake-choux.png", imageAlt: "Number cake aux petits choux réalisé par Melp.atisse" },
-  collaborations: { ...emptyPage("Collaborations & points de vente"), eyebrow: "RENCONTRES GOURMANDES", title: "Melp.atisse", emphasis: "près de chez vous.", intro: "Les adresses partenaires et les lieux où retrouver les gourmandises Melp.atisse.", image: "/images/traiteur-planche-festive.png", imageAlt: "Création traiteur Melp.atisse pour une réception" },
+  collaborations: { ...emptyPage("Collaborations & points de vente"), eyebrow: "RENCONTRES GOURMANDES", title: "Melp.atisse", emphasis: "près de chez vous.", intro: "Les adresses partenaires et les lieux où retrouver les gourmandises Melp.atisse.", image: "/images/traiteur-planche-festive.png", imageAlt: "Création traiteur Melp.atisse pour une réception", sections: [
+    { id: "lieu-garde-manger", title: "Le Garde Manger", body: "Produits proposés : à préciser avec Mélissa.", image: "", imageAlt: "", linkText: "", linkUrl: "", category: "point-de-vente", location: "Saint-Michel-Chef-Chef", date: "" },
+    { id: "lieu-epicerie-1909", title: "Épicerie 1909", body: "Sachets d’épicerie gourmande.", image: "", imageAlt: "", linkText: "", linkUrl: "", category: "point-de-vente", location: "La Plaine-sur-Mer", date: "" },
+    { id: "lieu-chamaillerie", title: "Chamaillerie et Cie", body: "Sachets de gourmandises.", image: "", imageAlt: "", linkText: "", linkUrl: "", category: "point-de-vente", location: "Sautron", date: "" },
+    { id: "collab-les-piafs", title: "Les Piafs", body: "Desserts en collaboration.", image: "", imageAlt: "", linkText: "", linkUrl: "", category: "restaurant", location: "", date: "" },
+    { id: "atelier-cmqlf", title: "C’est moi qui l’ai fait", body: "Thème et informations pratiques à consulter auprès du partenaire.", image: "", imageAlt: "", linkText: "Programme et réservation", linkUrl: "https://cmqlf.com/categorie/boutique-cest-moi-qui-lai-fait/ateliers-cuisine/", category: "atelier", location: "Savenay", date: "Chaque premier samedi du mois" },
+  ] },
   evenements: { ...emptyPage("Événements"), eyebrow: "ÉVÉNEMENTS", title: "Les grands moments", emphasis: "méritent mieux.", intro: "Des expériences sur mesure pensées autour de votre histoire, avec élégance, précision et gourmandise.", image: "/images/traiteur-planche-festive.png", imageAlt: "Table traiteur Melp.atisse", sections: [
     { id: "evenement-mariage", title: "Mariage", body: "Une réception à votre image, de la première création au dernier détail.", image: "/images/number-cake-fruits-rouges.png", imageAlt: "Création pour un mariage", linkText: "", linkUrl: "" },
     { id: "evenement-anniversaire", title: "Anniversaire", body: "Une création unique et une table pensée pour votre moment.", image: "/images/number-cake-marin.png", imageAlt: "Gâteau d’anniversaire", linkText: "", linkUrl: "" },
     { id: "evenement-entreprise", title: "Entreprise", body: "Cocktails, repas et expériences culinaires professionnelles.", image: "/images/verrines-radis.png", imageAlt: "Cocktail traiteur", linkText: "", linkUrl: "" },
     { id: "evenement-reception", title: "Réception", body: "Une expérience entièrement personnalisée chez vous.", image: "/images/traiteur-planche-festive.png", imageAlt: "Table de réception", linkText: "", linkUrl: "" },
   ] },
-  "a-propos": { ...emptyPage("Histoire & savoir-faire"), eyebrow: "MES VALEURS", title: "Ce qui me", emphasis: "guide.", intro: "Des valeurs simples et essentielles, qui donnent du sens à chaque création.", image: "/images/carte-photo-1.png", imageAlt: "Création pâtissière Melp.atisse", sections: [
+  "a-propos": { ...emptyPage("Histoire & savoir-faire"), eyebrow: "MES VALEURS", title: "Ce qui me", emphasis: "guide.", intro: "Des valeurs simples et essentielles, qui donnent du sens à chaque création.", storyHeading: "La pâtisserie, avec intention.", storyHistory: "Mélissa Garnier est pâtissière, cheffe privée et traiteur à La Plaine-sur-Mer. Elle est formée au BTM Pâtissier-Chocolatier-Glacier-Confiseur-Traiteur.", storyPractice: "Avec Melp.atisse, elle imagine des pâtisseries fines sur commande, en travaillant les textures, les saveurs et le soin du décor. Chaque création prend forme au fil des échanges autour de l’occasion et des envies.", image: "/images/carte-photo-1.png", imageAlt: "Création pâtissière Melp.atisse", sections: [
     { id: "valeur-generosite", title: "Générosité", body: "Des créations faites pour être découvertes, dégustées et partagées.", image: "/images/gateau-framboises-fleurs.png", imageAlt: "Pâtisserie aux fruits rouges", linkText: "", linkUrl: "" },
     { id: "valeur-artisanat", title: "Artisanat", body: "Des gestes précis, une attention portée aux détails et des créations façonnées à la main.", image: "/images/number-cake-tropical.png", imageAlt: "Number cake artisanal", linkText: "", linkUrl: "" },
     { id: "valeur-creativite", title: "Créativité", body: "Des recettes libres, élégantes et imaginées autour de chaque projet.", image: "/images/number-cake-chocolat-fleurs.png", imageAlt: "Création pâtissière créative", linkText: "", linkUrl: "" },
@@ -96,18 +105,14 @@ export const defaultContent: SiteContent = {
     title: "Les petites douceurs",
     emphasis: "à emporter.",
     intro: "Une sélection gourmande de créations artisanales à offrir ou à partager. Les disponibilités évoluent au fil des saisons et des fournées.",
-    heroImage: "/images/number-cake-choux.png",
-    heroImageAlt: "Number cake aux petits choux, une création Melp.atisse",
+    heroImage: "",
+    heroImageAlt: "",
     selectionEyebrow: "LA SÉLECTION MELP.ATISSE",
     selectionTitle: "À offrir ou à",
     selectionEmphasis: "savourer.",
-    selectionIntro: "Choisis une création pour découvrir sa composition, ses allergènes, ses formats et son tarif.",
-    note: "Les compositions, allergènes, formats et tarifs marqués « à confirmer » seront renseignés par Mélissa depuis l’administration.",
-    products: [
-      { id: "chocolat-noisettes", name: "Chocolat & noisettes", description: "Une création chocolatée photographiée dans l’atelier de Mélissa.", composition: "Composition à compléter avec Mélissa.", allergens: "Allergènes à confirmer avec Mélissa.", format: "Formats et nombre de parts à confirmer.", price: "Tarif à confirmer", image: "/images/entremets-chocolat-noisettes.png", imageAlt: "Création chocolatée aux noisettes" },
-      { id: "fruits-rouges", name: "Fruits rouges & fleurs", description: "Une pâtisserie fraîche et fleurie, à réserver selon la saison.", composition: "Composition à compléter avec Mélissa.", allergens: "Allergènes à confirmer avec Mélissa.", format: "Formats et nombre de parts à confirmer.", price: "Tarif à confirmer", image: "/images/carte-photo-2.png", imageAlt: "Gâteau décoré de fruits rouges et de fleurs" },
-      { id: "gateau-fleuri", name: "Gâteau fleuri à partager", description: "Une création décorée à la main, à personnaliser pour votre occasion.", composition: "Composition à compléter avec Mélissa.", allergens: "Allergènes à confirmer avec Mélissa.", format: "Formats et nombre de parts à confirmer.", price: "Tarif à confirmer", image: "/images/carte-photo-1.png", imageAlt: "Gâteau fleuri décoré de crème pochée" },
-    ],
+    selectionIntro: "La sélection et les informations produits seront ajoutées ici après validation par Mélissa.",
+    note: "Les produits, photos, compositions, formats et tarifs restent à renseigner depuis l’administration.",
+    products: [],
   },
 };
 
@@ -142,7 +147,7 @@ export async function readSiteContent(): Promise<SiteContent> {
       pages: Object.fromEntries(Object.entries(editablePages).map(([key, page]) => {
         const savedPage = saved.pages?.[key];
       const mergedPage = savedPage ? { ...page, ...savedPage, sections: Array.isArray(savedPage.sections) ? savedPage.sections : page.sections } : page;
-      if (key === "accueil" && mergedPage.eyebrow === "Pâtissière · Cheffe privée · Traiteur · Ateliers") {
+  if (key === "accueil" && mergedPage.eyebrow === "Pâtissière · Cheffe privée · Traiteur · Ateliers") {
         mergedPage.eyebrow = "Pâtissière · Traiteur · Cheffe privée · Atelier";
       }
       return [key, mergedPage];

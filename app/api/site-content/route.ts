@@ -38,7 +38,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Un des champs dépasse la longueur autorisée." }, { status: 400 });
     }
     for (const product of content.epicerie.products) {
-      if (![product.id, product.name, product.description, product.composition, product.allergens, product.format, product.price, product.image, product.imageAlt].every(value => typeof value === "string" && value.length <= 2000)) {
+      if (![product.id, product.name, product.description, product.composition, product.allergens, product.format, product.price, product.availability ?? "", product.image, product.imageAlt].every(value => typeof value === "string" && value.length <= 2000)) {
         return NextResponse.json({ error: "Une fiche produit contient un champ invalide." }, { status: 400 });
       }
       if (!isAllowedContentImage(product.image)) {
@@ -49,7 +49,7 @@ export async function PUT(request: Request) {
       if (![product.category, product.name, product.eyebrow, product.description, product.image, product.price, product.conservation, product.weight].every(value => typeof value === "string" && value.length <= 2000) || ![product.ingredients, product.allergens, product.notes].every(values => Array.isArray(values) && values.every(value => typeof value === "string" && value.length <= 500))) {
         return NextResponse.json({ error: "Une fiche pâtisserie contient un champ invalide." }, { status: 400 });
       }
-      if (!Number.isInteger(product.id) || !isAllowedContentImage(product.image)) {
+      if (!Number.isInteger(product.id) || product.image && !isAllowedContentImage(product.image)) {
         return NextResponse.json({ error: "La fiche contient un identifiant ou une photo invalide." }, { status: 400 });
       }
     }
