@@ -7,6 +7,7 @@ import {
   Check,
 } from "lucide-react";
 import Header from "@/components/Header";
+import useCmsPage from "@/components/useCmsPage";
 import "./page.css";
 
 const eventTypes = [
@@ -33,6 +34,8 @@ const eventTypes = [
 ];
 
 export default function Evenements() {
+  const cmsPage = useCmsPage("evenements");
+  const editableEventTypes = cmsPage ? cmsPage.sections.map((section,index) => ({ number: String(index + 1).padStart(2,"0"), title: section.title, text: section.body, image: section.image, imageAlt: section.imageAlt })) : eventTypes.map(event => ({ ...event, image: "", imageAlt: event.title }));
 
   return (
     <main className="events-page">
@@ -40,28 +43,22 @@ export default function Evenements() {
 
       {/* HERO */}
       <section className="events-hero">
-        <div className="hero-image" />
+        <div className="hero-image" style={cmsPage?.image ? { backgroundImage: `url("${cmsPage.image}")` } : undefined} />
         <div className="hero-vignette" />
         <div className="hero-grain" />
 
         <div className="hero-content">
           <span className="section-number">03 / ÉVÉNEMENTS</span>
 
-          <h1>
-            Les grands
-            <br />
-            moments
-            <br />
-            <em>méritent mieux.</em>
-          </h1>
+          <h1>{cmsPage?.title || "Les grands moments"}<br /><em>{cmsPage?.emphasis || "méritent mieux."}</em></h1>
 
-          <p>
+          <p>{cmsPage?.intro || <>
             Des expériences sur mesure pensées autour de votre histoire,
             avec élégance, précision et gourmandise.
-          </p>
+          </>}</p>
 
-          <a href="#reservation" className="hero-link">
-            <span>Voir les disponibilités</span>
+          <a href={cmsPage?.ctaUrl || "#reservation"} className="hero-link">
+            <span>{cmsPage?.ctaLabel || "Voir les disponibilités"}</span>
             <ArrowRight size={16} />
           </a>
         </div>
@@ -103,12 +100,12 @@ export default function Evenements() {
       <section className="event-types">
         <div className="types-header">
           <span>DES EXPÉRIENCES</span>
-          <span>01 — 04</span>
+          <span>01 — {String(editableEventTypes.length).padStart(2,"0")}</span>
         </div>
 
         <div className="types-grid">
-          {eventTypes.map((event) => (
-            <article className="event-card" key={event.number}>
+          {editableEventTypes.map((event) => (
+            <article className="event-card" key={`${event.number}-${event.title}`} style={event.image ? { backgroundImage: `linear-gradient(0deg, rgba(35,22,16,.88), rgba(35,22,16,.18)), url("${event.image}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
               <div className="card-glow" />
               <div className="card-top">
                 <span>{event.number}</span>
@@ -132,6 +129,7 @@ export default function Evenements() {
       <section className="events-showcase">
         <div className="showcase-main">
           <img
+            data-melp-media-id="event-showcase-1"
             src="/images/traiteur-planche-festive.png"
             alt="Planche traiteur festive réalisée par Melp.atisse"
           />
@@ -142,6 +140,7 @@ export default function Evenements() {
         <div className="showcase-side">
           <div className="showcase-small">
             <img
+              data-melp-media-id="event-showcase-2"
               src="/images/number-cake-tropical.png"
               alt="Number cake personnalisé, création Melp.atisse"
             />

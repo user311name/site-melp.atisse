@@ -1,7 +1,9 @@
 "use client";
 
+import ManagedPageSections from "@/components/ManagedPageSections";
 import { useEffect, useMemo, useState } from "react";
 import { pastryCatalog, type PastryProduct } from "@/lib/pastry-catalog";
+import type { EditablePage } from "@/lib/site-content";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -31,7 +33,8 @@ const categories = [
 export default function Patisserie() {
   const [activeCategory, setActiveCategory] = useState("Toutes");
   const [catalog, setCatalog] = useState<PastryProduct[]>(pastryCatalog);
-  useEffect(() => { fetch("/api/site-content", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((content: { patisserie?: { products?: PastryProduct[] } } | null) => { if (content?.patisserie?.products?.length) setCatalog(content.patisserie.products); }).catch(() => undefined); }, []);
+  const [cmsPage, setCmsPage] = useState<EditablePage | null>(null);
+  useEffect(() => { fetch("/api/site-content", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((content: { patisserie?: { products?: PastryProduct[] }; pages?: Record<string, EditablePage> } | null) => { if (content?.patisserie?.products?.length) setCatalog(content.patisserie.products); if (content?.pages?.patisserie) setCmsPage(content.pages.patisserie); }).catch(() => undefined); }, []);
   const [selectedProduct, setSelectedProduct] =
     useState<PastryProduct | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -100,26 +103,26 @@ export default function Patisserie() {
           <div className="pas-kicker">
             <span>01</span>
             <i />
-            <span>PÂTISSERIE ARTISANALE</span>
+            <span>{cmsPage?.eyebrow || "PÂTISSERIE ARTISANALE"}</span>
           </div>
 
           <h1>
-            La gourmandise
+            {cmsPage?.title || "La gourmandise"}
             <br />
-            <em>comme signature.</em>
+            <em>{cmsPage?.emphasis || "comme signature."}</em>
           </h1>
 
           <p>
-            Des créations imaginées, façonnées et dressées à la main,
-            directement depuis l&apos;atelier MELP.ATISSE.
+            {cmsPage?.intro || "Des créations imaginées, façonnées et dressées à la main, directement depuis l’atelier MELP.ATISSE."}
           </p>
 
-          <a href="#creations" className="pas-hero-link">
-            Découvrir les créations
+          <a href={cmsPage?.ctaUrl || "#creations"} className="pas-hero-link">
+            {cmsPage?.ctaLabel || "Découvrir les créations"}
             <ArrowRight size={17} />
           </a>
         </div>
 
+        {cmsPage?.image && <img className="pas-cms-hero-image" src={cmsPage.image} alt={cmsPage.imageAlt || "Création Melp.atisse"}/>}
         <div className="pas-hero-side">
           <span>MADE WITH</span>
           <strong>PASSION</strong>
@@ -396,6 +399,7 @@ export default function Patisserie() {
       <section className="pas-custom">
         <div className="pas-custom-image">
           <img
+            data-melp-media-id="pastry-custom"
             src="/images/number-cake-tropical.png"
             alt="Number cake personnalisé au décor tropical et chocolaté"
           />
@@ -491,6 +495,7 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
+              data-melp-media-id="pastry-instagram-1"
               src="/images/number-cake-vanille-fleurs.png"
               alt="Number cake décoré de crème pochée et de fleurs"
             />
@@ -513,6 +518,7 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
+              data-melp-media-id="pastry-instagram-2"
               src="/images/gateau-framboises-fleurs.png"
               alt="Gâteau décoré de framboises et de fleurs"
             />
@@ -535,6 +541,7 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
+              data-melp-media-id="pastry-instagram-3"
               src="/images/number-cake-choux.png"
               alt="Number cake garni de petits choux et de fleurs"
             />
@@ -557,6 +564,7 @@ export default function Patisserie() {
             className="pas-insta-image"
           >
             <img
+              data-melp-media-id="pastry-instagram-4"
               src="/images/entremets-chocolat-noisettes.png"
               alt="Entremets au décor chocolat et noisettes"
             />
@@ -595,6 +603,7 @@ export default function Patisserie() {
         </div>
       </section>
 
+          <ManagedPageSections pageKey="patisserie"/>
       <footer className="site-footer">
         <div className="footer-main">
           <div className="footer-brand">

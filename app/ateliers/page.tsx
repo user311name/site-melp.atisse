@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import WarmPage from "@/components/WarmPage";
+import ManagedPageSections from "@/components/ManagedPageSections";
 
 export default function Ateliers() {
   return (
@@ -11,21 +12,12 @@ export default function Ateliers() {
       image="/images/number-cake-choux.png"
       imageAlt="Number cake aux petits choux, une création pâtissière Melp.atisse"
       cta=""
+      includeManagedSections={false}
     >
       <span className="warm-eyebrow">UN MOMENT À VOTRE RYTHME</span>
       <h2>Apprendre, créer et <em>se régaler.</em></h2>
       <p>Chaque séance est adaptée au groupe et au thème choisi. Indiquez vos disponibilités et votre lieu dans la demande pour recevoir une proposition et un devis.</p>
-      <div className="warm-cards atelier-cards">
-        <article className="warm-card">
-          <h3>Chez vous</h3>
-          <p>Ateliers privés pour enfants et adultes, organisés sur demande après validation du lieu et des conditions d’accueil.</p>
-        </article>
-        <article className="warm-card">
-          <h3>À Savenay</h3>
-          <p>Les ateliers du premier samedi du mois se réservent sur le site de notre partenaire, C’est moi qui l’ai fait.</p>
-          <a className="warm-cta" href="https://cmqlf.com/categorie/boutique-cest-moi-qui-lai-fait/ateliers-cuisine/" target="_blank" rel="noreferrer">Programme et réservations <ArrowRight size={15}/></a>
-        </article>
-      </div>
+      <ManagedPageSections pageKey="ateliers" />
       <h2 style={{marginTop:70}}>Demande d’atelier</h2>
       <form className="warm-form" action="mailto:melp.atisse.contact@gmail.com" method="post" encType="text/plain">
         <div className="warm-form-grid">

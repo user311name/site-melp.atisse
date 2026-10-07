@@ -98,3 +98,231 @@ main[class*="-page"] h1,main[class*="-page"] h2,main[class*="-page"] h3,main[cla
  .site-header .mobile-navigation-links>a>strong{font-size:clamp(22px,6.8vw,26px)!important}
  .site-header .mobile-navigation-links>a.mobile-menu-contact{grid-template-columns:30px minmax(0,1fr) 20px!important}
 }
+/* Direction colorée ajustée d’après le retour de Mélissa : crème clair, chocolat franc,
+   rose bonbon et bordeaux, relevés de touches pêche et soleil. */
+:root {
+  --black: #4b2617;
+  --black-2: #f7ecde;
+  --cream: #4b2617;
+  --cream-2: #f0dfcc;
+  --white: #fff9f1;
+  --muted: #806149;
+  --line: rgba(75, 38, 23, .16);
+  --accent: #941b48;
+  --chocolate: #4b2617;
+  --berry: #941b48;
+  --pink: #f18ba5;
+  --peach: #f6aa78;
+  --sunshine: #f4cb52;
+  --dusty-rose: #c45c77;
+}
+html, body { background: #fff9f1 !important; color: #4b2617 !important; }
+.site-header { background: rgba(255,249,241,.97) !important; border-bottom-color: rgba(75,38,23,.14) !important; }
+.site-header .brand, .site-header .brand span { color: #4b2617 !important; }
+.site-header .brand i { color: #941b48 !important; }
+.desktop-nav a, .header-contact, .mobile-navigation-links strong { color: #4b2617 !important; }
+.desktop-nav a:hover, .desktop-nav a::after, .desktop-nav a:hover::after { color: #941b48 !important; background: #f18ba5 !important; }
+.mobile-menu-button { background: #941b48 !important; border-color: #941b48 !important; }
+.melp-home { --cream:#fff9f1 !important; --paper:#f7ecde !important; --choco:#4b2617 !important; --berry:#941b48 !important; --peach:#f6aa78 !important; --body:#70523c !important; background:#fff9f1 !important; color:#4b2617 !important; }
+.melp-home .home-hero, .melp-home .home-story, .melp-home .home-footer { background-color:#fff9f1 !important; }
+.melp-home .home-offers, .melp-home .home-services, .warm-content { background-color:#f7ecde !important; }
+.melp-home .home-ribbon, .melp-home .home-pickup-band { background:#4b2617 !important; }
+.melp-home .home-ribbon i, .melp-home .home-pickup-band>svg { color:#f4cb52 !important; }
+.melp-home .home-hero-art::before { background:#f18ba5 !important; }
+.warm-hero, .pas-hero, .events-hero, .contact-hero, .simple-hero, .reviews-hero { background-color:#fff9f1 !important; }
+.warm-card, main[class*="-page"] article, main[class*="-page"] .calendar-card, main[class*="-page"] .request-form, main[class*="-page"] .invitation-card, main[class*="-page"] .contact-card, main[class*="-page"] .process-card { background:#fffdf9 !important; }
+.warm-button, .warm-form button, main[class*="-page"] button:not(.mobile-menu-button), main[class*="-page"] .submit-button, main[class*="-page"] .main-button, main[class*="-page"] .cta-button, main[class*="-page"] .bottom-button { background:#941b48 !important; border-color:#941b48 !important; }
+.melp-home .home-button, .header-contact:hover { background:#941b48 !important; border-color:#941b48 !important; }
+.home-kicker i, .collab-group-heading>svg { background-color:#f18ba5 !important; color:#941b48 !important; }
+.collab-group { margin:40px 0 54px; }
+.collab-group-heading { display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; color:#941b48; }
+.collab-group-heading h3 { margin:0; font:600 28px/1.1 'Cormorant Garamond',Georgia,serif; color:#4b2617; }
+.collab-group-heading p { margin:5px 0 0; color:#806149; }
+.collab-cards { align-items:stretch; }
+.collab-cards .warm-card { min-height:220px; }
+.collab-location { display:flex; align-items:center; gap:6px; color:#806149; }
+.collab-pending { display:inline-block; margin-top:8px; color:#941b48; font:500 11px 'Lora',Georgia,serif; }
+.collab-contact { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+.collab-contact a { display:inline-flex; align-items:center; gap:6px; color:#941b48; font-weight:600; }
+
+main[class*='-page'] h1 em,main[class*='-page'] h2 em,main[class*='-page'] h3 em,.melp-home h1 em,.melp-home h2 em,.melp-home h3 em{color:#941b48!important}
+.collab-group-heading>svg{flex:none;min-width:21px}
+@media(max-width:700px){.collab-group{margin:30px 0 40px}.collab-group-heading h3{font-size:25px}.collab-cards .warm-card{min-height:0}}
+.managed-page-sections{width:min(1080px,100%);margin:42px auto 0}.managed-page-section{background:#fffdf9;color:#4b2617}.managed-page-section h2{color:#4b2617!important}.managed-page-section p{color:#70523c!important}.managed-page-section-link{color:#fff9f1!important}
+.pas-cms-hero-image{z-index:1}
+.events-page .hero-image{display:block!important;background-position:center;background-size:cover}
+.cms-page-hero-photo{display:block;width:min(100%,250px);height:135px;object-fit:cover;border-radius:8px;margin:16px 0;box-shadow:0 8px 24px rgba(75,38,23,.12)}
+@media(max-width:640px){.cms-page-hero-photo{width:min(100%,190px);height:110px;margin:12px 0}}
+
+/* Identité finale Melp.atisse : chocolat, crème, rose franc et accents soleil. */
+:root {
+  --melp-cream: #fffaf2;
+  --melp-cream-soft: #f7eadb;
+  --melp-chocolate: #4b2818;
+  --melp-cocoa: #76513a;
+  --melp-pink: #ed7897;
+  --melp-berry: #8f123d;
+  --melp-peach: #f6a77b;
+  --melp-orange: #ed8a32;
+  --melp-sunshine: #f3c94f;
+  --black: var(--melp-chocolate);
+  --black-2: var(--melp-cream-soft);
+  --cream: var(--melp-chocolate);
+  --cream-2: #ead6c1;
+  --white: var(--melp-cream);
+  --muted: var(--melp-cocoa);
+  --accent: var(--melp-berry);
+  --chocolate: var(--melp-chocolate);
+  --berry: var(--melp-berry);
+  --pink: var(--melp-pink);
+  --peach: var(--melp-peach);
+  --sunshine: var(--melp-sunshine);
+  --dusty-rose: #c65a78;
+}
+
+html, body {
+  background: var(--melp-cream) !important;
+  color: var(--melp-chocolate) !important;
+}
+body, button, input, textarea, select {
+  font-family: 'Lora', Georgia, serif !important;
+}
+
+/* Le nom de marque garde une forme ronde ; les titres apportent le contraste chic. */
+.site-header .brand,
+.site-header .brand span,
+.site-header .brand i,
+.home-wordmark,
+.warm-footer > a {
+  font-family: 'Baloo 2', 'Trebuchet MS', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: .005em !important;
+  text-transform: none !important;
+}
+.site-header .brand, .site-header .brand span, .home-wordmark, .warm-footer > a {
+  color: var(--melp-chocolate) !important;
+}
+.site-header .brand i, .home-wordmark i, .warm-footer > a i {
+  color: var(--melp-berry) !important;
+}
+.site-header .brand small { color: var(--melp-cocoa) !important; }
+
+:is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) :is(h1, h2, h3, h4) {
+  color: var(--melp-chocolate) !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 700 !important;
+  letter-spacing: .005em !important;
+  text-transform: none !important;
+}
+:is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) :is(h1 em, h2 em, h3 em) {
+  color: var(--melp-berry) !important;
+  font-family: 'Dancing Script', 'Brush Script MT', cursive !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+:is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) :is(p, li, label, small) {
+  color: var(--melp-cocoa);
+  font-family: 'Lora', Georgia, serif;
+}
+
+/* Le fond reste clair sur chaque rubrique, cartes comprises. */
+:is(.melp-home, .warm-page, .patisserie-page, .chef-page, .events-page, .about-page, .contact-page, .reviews-page) {
+  background: var(--melp-cream) !important;
+  color: var(--melp-chocolate) !important;
+}
+.warm-hero, .warm-content, .pas-hero, .pas-featured, .pas-custom,
+.events-hero, .events-showcase, .simple-hero, .about-story, .about-values,
+.contact-hero, .reviews-hero, .reviews-grid, .review-final,
+.home-hero, .home-story, .home-footer {
+  background-color: var(--melp-cream) !important;
+  color: var(--melp-chocolate) !important;
+}
+.warm-content, .home-offers, .home-services, .chef-page .experiences-section,
+.chef-page .process-section, .chef-page .chef-section, .chef-page .cta-section,
+.about-values, .pas-catalogue, .pas-review-empty, .reviews-empty {
+  background-color: var(--melp-cream-soft) !important;
+}
+:is(.warm-card, .offer-card, .pas-product, .process-card, .contact-card,
+    .calendar-card, .request-form, .invitation-card, .managed-page-section,
+    .experience-card, .value-card) {
+  background: #fffdf9 !important;
+  color: var(--melp-chocolate) !important;
+  border-color: rgba(75, 40, 24, .14) !important;
+  box-shadow: 0 10px 28px rgba(75, 40, 24, .07) !important;
+}
+.warm-card h3, .managed-page-section h2, .pas-product h3,
+.contact-card h3, .experience-card h3, .value-card h3 {
+  color: var(--melp-chocolate) !important;
+}
+
+/* Bordeaux pour les actions, rose et soleil en ponctuation visuelle. */
+.desktop-nav a, .header-contact, .mobile-navigation-links strong,
+.warm-footer, .warm-footer a, .site-footer, .site-footer a {
+  color: var(--melp-chocolate) !important;
+}
+.desktop-nav a:hover, .site-header .brand i, .warm-hero em,
+.home-kicker, .warm-eyebrow, .pas-eyebrow, .collab-group-heading,
+.collab-pending, .collab-contact a, .managed-page-section-link {
+  color: var(--melp-berry) !important;
+}
+.warm-button, .warm-form button, .home-button, .header-contact:hover,
+.pas-hero-link, .hero-link, .hero-button, .cta-button, .submit-button,
+.main-button, .bottom-button,
+main[class*='-page'] button:not(.mobile-menu-button) {
+  background: var(--melp-berry) !important;
+  border-color: var(--melp-berry) !important;
+  color: var(--melp-cream) !important;
+}
+.warm-button:hover, .warm-form button:hover, .home-button:hover,
+.pas-hero-link:hover, .hero-link:hover, .hero-button:hover,
+.cta-button:hover, .submit-button:hover, .main-button:hover {
+  background: var(--melp-chocolate) !important;
+  border-color: var(--melp-chocolate) !important;
+}
+.home-stamp, .home-kicker i, .collab-group-heading > svg,
+.home-ribbon i, .home-pickup-band > svg {
+  color: var(--melp-orange) !important;
+}
+.home-stamp, .home-kicker i, .collab-group-heading > svg {
+  background-color: rgba(237, 120, 151, .2) !important;
+}
+.home-ribbon, .home-pickup-band, .site-footer, .contact-footer, .footer {
+  background: var(--melp-chocolate) !important;
+  color: var(--melp-cream) !important;
+}
+.home-ribbon *, .home-pickup-band *, .site-footer *, .contact-footer *, .footer * {
+  color: inherit;
+}
+.home-ribbon i, .home-pickup-band > svg, .footer-column span {
+  color: var(--melp-sunshine) !important;
+}
+.warm-form input, .warm-form textarea, .warm-form select,
+main[class*='-page'] input, main[class*='-page'] textarea, main[class*='-page'] select {
+  background: #fffdf9 !important;
+  border-color: #e5cbb6 !important;
+  color: var(--melp-chocolate) !important;
+}
+.warm-form input:focus, .warm-form textarea:focus, .warm-form select:focus {
+  border-color: var(--melp-pink) !important;
+  box-shadow: 0 0 0 3px rgba(237, 120, 151, .16) !important;
+}
+
+.site-header { background: rgba(255,250,242,.97) !important; border-bottom-color: rgba(75,40,24,.14) !important; }
+.mobile-menu-button { background: var(--melp-berry) !important; border-color: var(--melp-berry) !important; }
+.mobile-navigation { background: var(--melp-cream) !important; }
+.site-header .mobile-navigation-links > a > strong { font-family: 'Cormorant Garamond', Georgia, serif !important; font-weight: 700 !important; }
+.site-header .mobile-navigation-links > a > svg { color: var(--melp-berry) !important; }
+
+@media (max-width: 800px) {
+  .home-hero, .warm-hero, .pas-hero, .events-hero, .simple-hero,
+  .contact-hero, .reviews-hero { background-color: var(--melp-cream) !important; }
+}
+.admin-shell, .admin-login { background: var(--melp-cream) !important; color: var(--melp-chocolate) !important; }
+.admin-shell :is(h1, h2, h3, h4), .admin-login-card h1 {
+  color: var(--melp-chocolate) !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 700 !important;
+}
+.admin-shell :is(button, .admin-upload-button, .admin-secondary), .admin-login-card form button {
+  font-family: 'Lora', Georgia, serif !important;
+}

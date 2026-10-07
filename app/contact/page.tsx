@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import Header from "@/components/Header";
+import useCmsPage from "@/components/useCmsPage";
 import "./page.css";
 
 const prestations = [
@@ -92,14 +93,20 @@ const bottomCards = [
 ];
 
 export default function ContactPage() {
+  const cmsPage = useCmsPage("contact");
+  const editablePrestations = cmsPage ? cmsPage.sections.map((section,index) => ({ number: String(index + 1).padStart(2,"0"), title: section.title, description: section.body, image: section.image || prestations[index]?.image || "", icon: prestations[index]?.icon || CakeSlice })) : prestations;
   const [selected, setSelected] = useState("Pâtisserie");
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("prestation");
-    const match = prestations.find(item => item.title.toLocaleLowerCase() === requested?.toLocaleLowerCase());
+    const match = editablePrestations.find(item => item.title.toLocaleLowerCase() === requested?.toLocaleLowerCase());
     if (match) setSelected(match.title);
   }, []);
+
+  useEffect(() => {
+    if (cmsPage && !cmsPage.sections.some(section => section.title === selected)) setSelected(cmsPage.sections[0]?.title || "");
+  }, [cmsPage]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -131,21 +138,21 @@ export default function ContactPage() {
 
         <div className="contact-hero-inner">
           <div className="hero-copy">
-            <span className="eyebrow">01 / CONTACT</span>
+            <span className="eyebrow">{cmsPage?.eyebrow || "01 / CONTACT"}</span>
 
             <h1>
-              Une envie,
+              {cmsPage?.title || "Une envie,"}
               <br />
-              <em>une table.</em>
+              <em>{cmsPage?.emphasis || "une table."}</em>
             </h1>
 
             <p>
-              Pâtisserie, gâteau personnalisé, dîner privé ou événement :
-              choisissez simplement ce qui vous ferait plaisir.
+              {cmsPage?.intro || "Pâtisserie, gâteau personnalisé, dîner privé ou événement : choisissez simplement ce qui vous ferait plaisir."}
             </p>
+            {cmsPage?.image && <img className="cms-page-hero-photo" src={cmsPage.image} alt={cmsPage.imageAlt || "Création Melp.atisse"}/>}
 
-            <a href="#demande" className="hero-button">
-              Commencer
+            <a href={cmsPage?.ctaUrl || "#demande"} className="hero-button">
+              {cmsPage?.ctaLabel || "Commencer"}
               <ArrowRight size={17} />
             </a>
           </div>
@@ -153,7 +160,7 @@ export default function ContactPage() {
           {/* ================= CARTES 3D ================= */}
 
           <div className="hero-cards">
-            {prestations.map((item, index) => {
+            {editablePrestations.map((item, index) => {
               const Icon = item.icon;
 
               return (
@@ -280,7 +287,7 @@ export default function ContactPage() {
                 <strong>{selected}</strong>
 
                 <small>
-                  {prestations.find((item) => item.title === selected)
+                  {editablePrestations.find((item) => item.title === selected)
                     ?.description || ""}
                 </small>
               </div>
@@ -302,7 +309,7 @@ export default function ContactPage() {
               <span>CHOISIR UNE PRESTATION</span>
 
               <div className="mobile-choice-list">
-                {prestations.map((item) => (
+                {editablePrestations.map((item) => (
                   <button
                     key={item.title}
                     type="button"
@@ -489,7 +496,7 @@ export default function ContactPage() {
                 className={`bottom-card bottom-card-${index + 1}`}
               >
                 <div className="bottom-card-image">
-                  <img src={card.image} alt={card.title} />
+                  <img data-melp-media-id={`contact-bottom-${index + 1}`} src={card.image} alt={card.title} />
                 </div>
 
                 <div className="bottom-card-overlay" />

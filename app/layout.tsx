@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./brand.css";
+import SiteMediaRuntime from "@/components/SiteMediaRuntime";
 
 export const metadata: Metadata = {
   title: "Melp.atisse — Pâtisserie artisanale à La Plaine-sur-Mer",
@@ -15,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body>{children}</body>
+      <body><SiteMediaRuntime />{children}</body>
     </html>
   );  
 }

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminPassword } from "@/lib/site-content";
-import { listOrders, updateOrder, type PickupOrder } from "@/lib/orders";
-import { creditCompletedOrder } from "@/lib/loyalty";
+import { updateOrder, type PickupOrder } from "@/lib/orders";
 
 export const runtime = "nodejs";
 
@@ -10,9 +9,8 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null) as { id?: string; status?: PickupOrder["status"] } | null;
   if (!body?.id || !body.status || !["awaiting_confirmation", "confirmed", "completed", "cancelled"].includes(body.status)) return NextResponse.json({ error: "Mise à jour invalide." }, { status: 400 });
   try {
-    const previous = (await listOrders()).find(order => order.id === body.id);
     const order = await updateOrder(body.id, body.status);
-    if (order && body.status === "completed" && previous?.status !== "completed") await creditCompletedOrder(order.email, order.id);
+    
     return order ? NextResponse.json(order) : NextResponse.json({ error: "Commande introuvable." }, { status: 404 });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Mise à jour impossible." }, { status: 409 }); }
 }

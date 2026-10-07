@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import ManagedPageSections from "@/components/ManagedPageSections";
 import { ArrowRight, Star } from "lucide-react";
 import Header from "@/components/Header";
+import useCmsPage from "@/components/useCmsPage";
 import "./page.css";
 
 const reviews: { text: string; name: string; type: string }[] = [];
 
 export default function Avis() {
+  const cmsPage = useCmsPage("avis");
   return (
     <main className="reviews-page">
       <Header />
@@ -14,14 +19,15 @@ export default function Avis() {
         <span>05 / AVIS</span>
 
         <h1>
-          Vos mots font
+          {cmsPage?.title || "Vos mots font"}
           <br />
-          <i>vivre Melp.</i>
+          <i>{cmsPage?.emphasis || "vivre Melp."}</i>
         </h1>
 
         <p>
-          Les retours de celles et ceux qui ont goûté les créations de Mélissa.
+          {cmsPage?.intro || "Les retours de celles et ceux qui ont goûté les créations de Mélissa."}
         </p>
+        {cmsPage?.image && <img className="cms-page-hero-photo" src={cmsPage.image} alt={cmsPage.imageAlt || "Création Melp.atisse"}/>}
       </section>
 
       <section className="reviews-grid">
@@ -65,6 +71,7 @@ export default function Avis() {
         </Link>
       </section>
 
+          <ManagedPageSections pageKey="avis"/>
       <footer className="site-footer">
         <div className="footer-main">
           <div className="footer-brand">

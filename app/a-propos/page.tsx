@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import Header from "@/components/Header";
+import useCmsPage from "@/components/useCmsPage";
 import "./page.css";
 
 const values = [
@@ -41,6 +42,8 @@ const values = [
 ];
 
 export default function APropos() {
+  const cmsPage = useCmsPage("a-propos");
+  const editableValues = cmsPage ? cmsPage.sections.map((section,index) => ({ number: String(index + 1).padStart(2,"0"), title: section.title, text: section.body, tags: values[index]?.tags || "", image: section.image || values[index]?.image || "" })) : values;
   return (
     <main className="about-page">
       <Header />
@@ -54,19 +57,19 @@ export default function APropos() {
           <span className="small-label">MES VALEURS</span>
 
           <h1>
-            Ce qui me
+            {cmsPage?.title || "Ce qui me"}
             <br />
-            <em>guide.</em>
+            <em>{cmsPage?.emphasis || "guide."}</em>
           </h1>
         </div>
 
         <div className="values-intro-middle">
           <p>
-            Des valeurs simples
+            {cmsPage?.intro || <>Des valeurs simples
             <br />
             et essentielles, qui donnent
             <br />
-            du sens à chaque création.
+            du sens à chaque création.</>}
           </p>
         </div>
 
@@ -77,7 +80,7 @@ export default function APropos() {
       </section>
 
       <section className="about-story">
-        <div className="about-story-photo"><img src="/images/carte-photo-1.png" alt="Création pâtissière photographiée dans l’univers Melp.atisse"/></div>
+        <div className="about-story-photo"><img src={cmsPage?.image || "/images/carte-photo-1.png"} alt={cmsPage?.imageAlt || "Création pâtissière photographiée dans l’univers Melp.atisse"}/></div>
         <div className="about-story-copy">
           <span className="small-label">LE PARCOURS DE MÉLISSA</span>
           <h2>La pâtisserie, <em>avec intention.</em></h2>
@@ -92,7 +95,7 @@ export default function APropos() {
       ===================================================== */}
 
       <section className="values-cards">
-        {values.map((value) => (
+        {editableValues.map((value) => (
           <article className="value-card" key={value.number}>
             <div className="value-card-inner">
               {/* Numéro */}
@@ -173,8 +176,8 @@ export default function APropos() {
           <p>Les couleurs, les formes et les créations de la carte de visite inspirent l’univers du site.</p>
         </div>
         <div className="brand-card-pair">
-          <img src="/images/melp-carte-recto.png" alt="Recto de la carte de visite Melp.atisse"/>
-          <img src="/images/melp-carte-verso.png" alt="Verso de la carte de visite Melp.atisse avec coordonnées"/>
+          <img data-melp-media-id="about-card-front" src="/images/melp-carte-recto.png" alt="Recto de la carte de visite Melp.atisse"/>
+          <img data-melp-media-id="about-card-back" src="/images/melp-carte-verso.png" alt="Verso de la carte de visite Melp.atisse avec coordonnées"/>
         </div>
       </section>
 
