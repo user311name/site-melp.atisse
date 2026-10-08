@@ -20,3 +20,4 @@
 .schedule-reopen{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;color:#8c2943;cursor:pointer;font:inherit}
 .schedule-closed-date small{display:block;margin-top:8px;color:#806c59;font-size:12px}
 @media(max-width:640px){.schedule-closed-date>div{align-items:stretch}.schedule-closed-date>div button{white-space:normal}.schedule-closed-date li{align-items:flex-start;flex-direction:column}}
+.admin-inquiries{margin-top:36px}.admin-inquiry-details{white-space:pre-wrap;line-height:1.55}.admin-inquiries .admin-products-heading{align-items:flex-start}@media(max-width:640px){.admin-inquiries .admin-products-heading{flex-direction:column}}

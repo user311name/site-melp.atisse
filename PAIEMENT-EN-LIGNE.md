@@ -5,7 +5,7 @@ Le paiement est volontairement demandé après que Mélissa a vérifié la deman
 ## Configuration nécessaire
 
 1. Créer/activer le compte Stripe de Melp.atisse et commencer avec les clés de test.
-2. Dans le projet Vercel, connecter une base Upstash Redis. Les variables attendues sont `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN`. Elles rendent le registre des commandes et la réservation des créneaux durables entre les fonctions Vercel.
+2. Dans le projet Vercel, connecter une base Upstash Redis. Les variables attendues sont `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN`. Elles rendent le registre des commandes, des demandes de contact/prestation et d’atelier, ainsi que la réservation des créneaux, durables entre les fonctions Vercel.
 3. Ajouter dans Vercel, pour l’environnement Production :
    - `STRIPE_SECRET_KEY` : clé secrète Stripe de test, puis clé live après validation du parcours ;
    - `STRIPE_WEBHOOK_SECRET` : secret fourni pour le webhook ci-dessous ;
@@ -23,6 +23,8 @@ Le paiement est volontairement demandé après que Mélissa a vérifié la deman
 3. En acceptant ou en refusant la demande depuis l’admin, Mélissa envoie automatiquement la réponse correspondante par e-mail. L’acceptation rappelle la date et l’heure de retrait et précise que le lien de paiement suivra. L’état de chaque envoi apparaît dans l’admin ; si l’envoi échoue, un bouton permet de réessayer.
 4. Après validation du montant, Mélissa crée le lien Stripe et le transmet au client par e-mail. La cliente paie sur la page sécurisée hébergée par Stripe.
 5. Le webhook Stripe enregistre le paiement auprès du site ; la page de retour vérifie également le statut directement auprès de Stripe.
+
+Les formulaires de contact/prestation et d’atelier sont enregistrés dans `/admin` sans ouvrir la messagerie du visiteur. Mélissa peut les accepter ou les refuser ; Resend envoie alors la réponse à l’adresse indiquée par le client.
 
 En production, le site suspend les demandes, la gestion du calendrier et la création des liens de paiement tant que la base durable n’est pas configurée. La confirmation automatique nécessite aussi une clé Resend et une adresse d’expédition dont le domaine est vérifié. Ne placez aucune clé Stripe, Resend ou Redis dans le code source ni dans un message.
 

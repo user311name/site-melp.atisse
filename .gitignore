@@ -49,3 +49,6 @@ next-env.d.ts
 /data/orders.json
 /data/orders.json.tmp
 /data/orders.lock/
+/data/inquiries.json
+/data/inquiries.json.tmp
+/data/inquiries.lock/

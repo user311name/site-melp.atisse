@@ -97,6 +97,8 @@ export default function ContactPage() {
   const editablePrestations = useMemo(() => cmsPage ? cmsPage.sections.map((section,index) => ({ number: String(index + 1).padStart(2,"0"), title: section.title, description: section.body, image: section.image || prestations[index]?.image || "", icon: prestations[index]?.icon || CakeSlice })) : prestations, [cmsPage]);
   const [selected, setSelected] = useState("Pâtisserie");
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const queryApplied = useRef(false);
 
   useEffect(() => {
@@ -117,15 +119,40 @@ export default function ContactPage() {
     ? cmsPage.sections[0]?.title || ""
     : selected;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const details = new FormData(event.currentTarget);
-    details.set("Prestation", selectedPrestation);
-    const body = Array.from(details.entries())
-      .map(([label, value]) => `${label} : ${value}`)
-      .join("\n");
-    window.location.href = `mailto:melp.atisse.contact@gmail.com?subject=${encodeURIComponent("Demande depuis le site Melp.atisse")}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    if (sending) return;
+    const form = event.currentTarget;
+    const details = new FormData(form);
+    setSending(true);
+    setSent(false);
+    setSubmitError("");
+    try {
+      const response = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "contact",
+          name: details.get("name"),
+          email: details.get("email"),
+          requestedDate: details.get("date"),
+          participants: details.get("people"),
+          phone: details.get("phone"),
+          occasion: details.get("occasion"),
+          request: selectedPrestation,
+          details: details.get("message") || "Demande de prestation depuis le site.",
+          website: details.get("website"),
+        }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(result?.error || "Votre demande n’a pas pu être enregistrée. Réessayez.");
+      setSent(true);
+      form.reset();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Votre demande n’a pas pu être enregistrée. Réessayez.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -289,6 +316,7 @@ export default function ContactPage() {
           </div>
 
           <form className="request-form" onSubmit={handleSubmit}>
+            <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1 }} />
             <div className="form-card-top">
               <div>
                 <span>VOTRE PRESTATION</span>
@@ -419,7 +447,7 @@ export default function ContactPage() {
               </div>
 
               <button className="submit-button" type="submit">
-                {sent ? "Messagerie ouverte" : "Préparer mon e-mail"}
+                {sending ? "Envoi en cours…" : sent ? "Demande envoyée" : "Envoyer ma demande"}
 
                 {sent ? (
                   <Check size={17} />
@@ -434,14 +462,15 @@ export default function ContactPage() {
                 <Check size={18} />
 
                 <div>
-                  <strong>Votre e-mail est prêt.</strong>
+                  <strong>Votre demande a bien été transmise.</strong>
 
                   <span>
-                    Vérifiez l’ouverture de votre messagerie puis envoyez le message pour transmettre votre demande à Mélissa.
+                    Mélissa la retrouvera dans la page d’administration et vous répondra après étude.
                   </span>
                 </div>
               </div>
             )}
+            {submitError && <div className="success-box" role="alert"><span>{submitError}</span></div>}
           </form>
         </div>
       </section>
