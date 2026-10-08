@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
 import { isAdminPassword, readSiteContent } from "@/lib/site-content";
-import { createHold, listOrders, releaseHold, submitOrder } from "@/lib/orders";
+import { createHold, dailyOrderLimit, isScheduleDateClosed, listOrders, orderStorageReady, releaseHold, submitOrder } from "@/lib/orders";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   if (!isAdminPassword(request.headers.get("x-melp-admin-password"))) return NextResponse.json({ error: "Accès administrateur refusé." }, { status: 401 });
-  return NextResponse.json(await listOrders(), { headers: { "Cache-Control": "no-store" } });
+  if (!orderStorageReady()) return NextResponse.json({ error: "La base durable des commandes n’est pas configurée sur Vercel." }, { status: 503 });
+  try { return NextResponse.json(await listOrders(), { headers: { "Cache-Control": "no-store" } }); }
+  catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Lecture des commandes impossible." }, { status: 503 }); }
 }
 
 export async function POST(request: Request) {
+  if (!orderStorageReady()) return NextResponse.json({ error: "La base durable des commandes n’est pas configurée sur Vercel. Les demandes et paiements sont suspendus." }, { status: 503 });
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== "object") return NextResponse.json({ error: "Demande invalide." }, { status: 400 });
   try {
@@ -18,8 +21,9 @@ export async function POST(request: Request) {
       const orders = await listOrders();
       const schedule = (await readSiteContent()).schedule;
       const active = orders.filter(order => order.date === body.date && (order.status === "confirmed" || order.status === "awaiting_confirmation" || order.status === "held" && Date.parse(order.holdExpiresAt ?? "") > Date.now()));
-      const closed = schedule.closedDates.includes(body.date);
-      const full = schedule.maxOrdersPerDay !== null && active.length >= schedule.maxOrdersPerDay;
+      const closed = isScheduleDateClosed(body.date, schedule);
+      const limit = dailyOrderLimit(body.date, schedule);
+      const full = limit !== null && active.length >= limit;
       return NextResponse.json({ unavailable: closed || full ? ["__ALL__"] : active.map(order => order.time), message: closed ? "Les retraits ne sont pas ouverts à cette date." : full ? "La capacité de production est atteinte à cette date." : "" });
     }
     if (body.action === "hold" && typeof body.date === "string" && typeof body.time === "string") return NextResponse.json(await createHold(body.date, body.time), { status: 201 });

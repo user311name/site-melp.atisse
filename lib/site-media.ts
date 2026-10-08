@@ -5,7 +5,7 @@ export const siteImageAssets: SiteImageAsset[] = [
   { id: "home-hero", label: "Accueil — grande photo", src: "/images/number-cake-fruits-rouges.png" },
   { id: "home-pastries", label: "Accueil — carte pâtisseries", src: "/images/gateau-framboises-fleurs.png" },
   { id: "home-grocery", label: "Accueil — carte épicerie gourmande", src: "/images/entremets-chocolat-noisettes.png" },
-  { id: "home-workshops", label: "Accueil — carte ateliers", src: "/images/number-cake-marin.png" },
+  { id: "home-workshops", label: "Accueil — carte ateliers", src: "/images/number-cake-choux.png" },
   { id: "home-story", label: "Accueil — savoir-faire", src: "/images/number-cake-tropical.png" },
   { id: "pastry-custom", label: "Pâtisserie — création sur mesure", src: "/images/number-cake-tropical.png" },
   { id: "pastry-instagram-1", label: "Pâtisserie — galerie photo 1", src: "/images/number-cake-vanille-fleurs.png" },

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { isAdminPassword } from "@/lib/site-content";
-import { updateOrder, type PickupOrder } from "@/lib/orders";
+import { orderStorageReady, updateOrder, type PickupOrder } from "@/lib/orders";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   if (!isAdminPassword(request.headers.get("x-melp-admin-password"))) return NextResponse.json({ error: "Accès administrateur refusé." }, { status: 401 });
+  if (!orderStorageReady()) return NextResponse.json({ error: "La base durable des commandes n’est pas configurée sur Vercel." }, { status: 503 });
   const body = await request.json().catch(() => null) as { id?: string; status?: PickupOrder["status"] } | null;
   if (!body?.id || !body.status || !["awaiting_confirmation", "confirmed", "completed", "cancelled"].includes(body.status)) return NextResponse.json({ error: "Mise à jour invalide." }, { status: 400 });
   try {

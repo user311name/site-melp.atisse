@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import ManagedPageSections from "@/components/ManagedPageSections";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import useCmsPage from "@/components/useCmsPage";
+import ReviewWall from "@/components/ReviewWall";
 import "./page.css";
-
-const reviews: { text: string; name: string; type: string }[] = [];
+import "./reviews.css";
 
 export default function Avis() {
   const cmsPage = useCmsPage("avis");
@@ -30,29 +30,7 @@ export default function Avis() {
         {cmsPage?.image && <img className="cms-page-hero-photo" src={cmsPage.image} alt={cmsPage.imageAlt || "Création Melp.atisse"}/>}
       </section>
 
-      <section className="reviews-grid">
-        {reviews.length === 0 && <div className="reviews-empty"><span className="warm-eyebrow">AVIS AUTHENTIQUES</span><h2>Les avis clients arrivent ici.</h2><p>Les témoignages seront publiés avec leurs vrais textes et l’accord de leurs auteurs. En attendant, consulte les avis publics ou partage ton expérience.</p><a href="https://maps.google.com/?q=Melp.atisse+6+rue+L%C3%A9on+Fourneau+44770+La+Plaine-sur-Mer" target="_blank" rel="noreferrer">Consulter les avis publics <ArrowRight size={16}/></a></div>}
-        {reviews.map((review, index) => (
-          <article key={review.name} className="review-item">
-            <div className="review-stars">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={13} fill="currentColor" />
-              ))}
-            </div>
-
-            <span className="review-number">
-              0{index + 1}
-            </span>
-
-            <blockquote>“{review.text}”</blockquote>
-
-            <div className="review-author">
-              <strong>{review.name}</strong>
-              <span>{review.type}</span>
-            </div>
-          </article>
-        ))}
-      </section>
+      <ReviewWall />
 
       <section className="review-final">
         <span>VOTRE EXPÉRIENCE</span>

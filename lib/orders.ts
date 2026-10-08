@@ -1,18 +1,49 @@
 import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { readSiteContent } from "@/lib/site-content";
+import { Redis } from "@upstash/redis";
+import { readSiteContent, type SiteContent } from "@/lib/site-content";
 
 export type PickupOrder = {
   id: string; kind: "pickup" | "special"; status: "held" | "awaiting_confirmation" | "confirmed" | "completed" | "cancelled";
-  createdAt: string; holdExpiresAt?: string; date?: string; time?: string; name: string; email: string; phone: string; products: string; notes: string; amount?: number; paymentStatus: "not_paid" | "paid" | "refunded";
+  createdAt: string; holdExpiresAt?: string; date?: string; time?: string; name: string; email: string; phone: string; products: string; notes: string; amount?: number; paymentStatus: "not_paid" | "paid" | "refunded"; stripeCheckoutSessionId?: string; stripeCheckoutUrl?: string;
 };
+
+export function isScheduleDateClosed(date: string, schedule: SiteContent["schedule"]) {
+  const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
+  if (schedule.openDates.includes(date)) return false;
+  return schedule.closedDates.includes(date)
+    || schedule.closedRanges.some(range => date >= range.start && date <= range.end)
+    || schedule.closedWeekdays.includes(weekday);
+}
+
+export function dailyOrderLimit(date: string, schedule: SiteContent["schedule"]) {
+  return schedule.capacityOverrides.find(override => override.date === date)?.maxOrders ?? schedule.maxOrdersPerDay;
+}
 
 const file = path.join(process.cwd(), "data", "orders.json");
 const lock = path.join(process.cwd(), "data", "orders.lock");
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const orderKey = "melp:orders:v1";
+const lockKey = "melp:orders:lock:v1";
+const redisConfigured = () => Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+const redis = () => new Redis({ url: process.env.UPSTASH_REDIS_REST_URL!, token: process.env.UPSTASH_REDIS_REST_TOKEN! });
+export const orderStorageReady = () => redisConfigured() || process.env.VERCEL !== "1";
 
 async function exclusive<T>(work: () => Promise<T>): Promise<T> {
+  if (!orderStorageReady()) throw new Error("Les commandes en ligne ne sont pas activées : configurez une base Upstash Redis sur Vercel avant d’accepter les paiements.");
+  if (redisConfigured()) {
+    const client = redis();
+    const token = randomUUID();
+    let acquired = false;
+    for (let attempt = 0; attempt < 80; attempt += 1) {
+      if (await client.set(lockKey, token, { nx: true, ex: 30 }) === "OK") { acquired = true; break; }
+      await delay(50);
+    }
+    if (!acquired) throw new Error("Le registre des commandes est occupé. Réessaie dans quelques secondes.");
+    try { return await work(); }
+    finally { await client.eval("if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end", [lockKey], [token]); }
+  }
   await mkdir(path.dirname(file), { recursive: true });
   let acquired = false;
   for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -23,6 +54,7 @@ async function exclusive<T>(work: () => Promise<T>): Promise<T> {
 }
 
 async function readUnlocked(): Promise<PickupOrder[]> {
+  if (redisConfigured()) return (await redis().get<PickupOrder[]>(orderKey)) ?? [];
   try {
     const orders = JSON.parse(await readFile(file, "utf8")) as PickupOrder[];
     return orders.filter(order => !order.holdExpiresAt || Date.parse(order.holdExpiresAt) > Date.now() || order.status !== "held");
@@ -30,6 +62,7 @@ async function readUnlocked(): Promise<PickupOrder[]> {
 }
 
 async function writeUnlocked(orders: PickupOrder[]) {
+  if (redisConfigured()) { await redis().set(orderKey, orders); return; }
   const temp = `${file}.tmp`;
   await writeFile(temp, JSON.stringify(orders, null, 2), "utf8");
   await rename(temp, file);
@@ -55,12 +88,13 @@ export async function createHold(date: string, time: string) {
   minDate.setUTCDate(minDate.getUTCDate() + 4);
   if (date < minDate.toISOString().slice(0, 10)) throw new Error("Le retrait doit être demandé au moins quatre jours à l’avance.");
   const schedule = (await readSiteContent()).schedule;
-  if (schedule.closedDates.includes(date)) throw new Error("Aucun retrait n’est ouvert à cette date.");
+  if (isScheduleDateClosed(date, schedule)) throw new Error("Aucun retrait n’est ouvert à cette date.");
   return exclusive(async () => {
     const orders = await readUnlocked();
-    if (schedule.maxOrdersPerDay !== null) {
+    const dailyLimit = dailyOrderLimit(date, schedule);
+    if (dailyLimit !== null) {
       const count = orders.filter(order => order.date === date && (order.status === "confirmed" || order.status === "awaiting_confirmation" || order.status === "held" && Date.parse(order.holdExpiresAt ?? "") > Date.now())).length;
-      if (count >= schedule.maxOrdersPerDay) throw new Error("La capacité de production de cette date est atteinte.");
+      if (count >= dailyLimit) throw new Error("La capacité de production de cette date est atteinte.");
     }
     const occupied = orders.some(order => order.date === date && order.time === time && (order.status === "confirmed" || order.status === "awaiting_confirmation" || order.status === "held" && Date.parse(order.holdExpiresAt ?? "") > Date.now()));
     if (occupied) throw new Error("Ce créneau vient d’être retenu. Choisis-en un autre.");
@@ -98,11 +132,38 @@ export async function updateOrder(id: string, status: PickupOrder["status"]) {
     const order = orders.find(entry => entry.id === id);
     if (!order || status === "held") return null;
     if (status === "confirmed" && order.date) {
+      if (order.kind === "pickup" && isScheduleDateClosed(order.date, schedule)) throw new Error("Cette date de retrait est maintenant bloquée dans le calendrier.");
       const active = orders.filter(entry => entry.id !== id && entry.date === order.date && (entry.status === "confirmed" || entry.status === "awaiting_confirmation" || entry.status === "held" && Date.parse(entry.holdExpiresAt ?? "") > Date.now()));
-      if (schedule.maxOrdersPerDay !== null && active.length >= schedule.maxOrdersPerDay) throw new Error("La capacité de production est atteinte pour cette date. Vérifie les autres demandes avant de confirmer.");
+      const dailyLimit = dailyOrderLimit(order.date, schedule);
+      if (dailyLimit !== null && active.length >= dailyLimit) throw new Error("La capacité de production est atteinte pour cette date. Vérifie les autres demandes avant de confirmer.");
       if (order.time && active.some(entry => entry.time === order.time)) throw new Error("Un autre retrait ou une demande en attente occupe déjà ce créneau.");
     }
     order.status = status; await writeUnlocked(orders); return order;
+  });
+}
+
+export async function createOrReuseOrderCheckout(id: string, amount: number, createSession: (order: PickupOrder) => Promise<{ sessionId: string; checkoutUrl: string; reused?: boolean }>) {
+  return exclusive(async () => {
+    const orders = await readUnlocked();
+    const order = orders.find(entry => entry.id === id);
+    if (!order) throw new Error("Commande introuvable.");
+    if (order.status !== "confirmed") throw new Error("Confirme d’abord la demande avant de demander le paiement.");
+    if (order.paymentStatus === "paid") throw new Error("Cette commande est déjà payée.");
+    const session = await createSession(order);
+    Object.assign(order, { amount, stripeCheckoutSessionId: session.sessionId, stripeCheckoutUrl: session.checkoutUrl });
+    await writeUnlocked(orders);
+    return { order, reused: session.reused ?? false };
+  });
+}
+
+export async function markOrderPaid(id: string, sessionId: string, amount: number) {
+  return exclusive(async () => {
+    const orders = await readUnlocked();
+    const order = orders.find(entry => entry.id === id);
+    if (!order || order.stripeCheckoutSessionId !== sessionId || order.amount !== amount) return false;
+    order.paymentStatus = "paid";
+    await writeUnlocked(orders);
+    return true;
   });
 }
 

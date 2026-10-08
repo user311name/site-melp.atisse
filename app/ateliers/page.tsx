@@ -9,8 +9,8 @@ export default function Ateliers() {
       title="On met la main"
       emphasis="à la pâte ?"
       intro="Des ateliers de pâtisserie pour enfants et adultes, chez vous, sur demande et sur devis."
-      image=""
-      imageAlt="Photo d’un atelier Melp.atisse à ajouter"
+      image="/images/number-cake-choux.png"
+      imageAlt="Number cake aux petits choux, création Melp.atisse"
       cta=""
       includeManagedSections={false}
     >

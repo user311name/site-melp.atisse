@@ -28,7 +28,11 @@ export default function Commander() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setCreation(new URLSearchParams(window.location.search).get("creation") ?? ""));
+    const params = new URLSearchParams(window.location.search);
+    const frame = window.requestAnimationFrame(() => {
+      setCreation(params.get("creation") ?? "");
+      if (params.get("paiement") === "annule") setMessage("Paiement non terminé. Aucun montant n’a été prélevé. Contacte Mélissa si tu souhaites un nouveau lien.");
+    });
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
@@ -86,7 +90,7 @@ export default function Commander() {
   return <WarmPage eyebrow="COMMANDE À EMPORTER" title="Une douceur" emphasis="pour bientôt." intro="Envoyez votre demande de commande et choisissez un horaire de retrait à La Plaine-sur-Mer. Prévoir au moins quatre jours à l’avance." image="/images/number-cake-choux.png" imageAlt="Number cake aux petits choux réalisé par Melp.atisse" cta="Choisir mon retrait">
     <span className="warm-eyebrow">VENDREDI · 16 H À 19 H &nbsp; / &nbsp; SAMEDI · 9 H À 14 H</span>
     <h2>Votre demande, <em>en quelques détails.</em></h2>
-    <div className="warm-note">Un horaire sélectionné est retenu pendant dix minutes. Toute demande doit être confirmée par Mélissa avant d’être définitive. Le paiement en ligne n’est pas encore activé.</div>
+    <div className="warm-note">Un horaire sélectionné est retenu pendant dix minutes. Toute demande doit être confirmée par Mélissa avant d’être définitive. Après confirmation du montant, tu recevras un lien de paiement sécurisé par carte.</div>
     <form className="warm-form" onSubmit={submit}>
       <div className="warm-form-grid">
         <label>VOTRE PRÉNOM<input name="firstName" autoComplete="given-name" required/></label>
@@ -104,7 +108,7 @@ export default function Commander() {
       </div>
       <button className="warm-button" type="submit" disabled={busy || !special && !hold}>{busy ? "Envoi en cours…" : "Envoyer ma demande"} <ArrowRight size={15}/></button>
       {message && <div className="warm-note" role="status">{message}</div>}
-      <div className="warm-note">Une demande de retrait ne vaut pas confirmation de commande. Mélissa vous recontactera pour vérifier la capacité de production et convenir du paiement.</div>
+      <div className="warm-note">Une demande de retrait ne vaut pas confirmation de commande. Mélissa vérifiera la capacité de production, validera le montant et t’enverra ensuite le lien de paiement sécurisé.</div>
     </form>
   </WarmPage>;
 }

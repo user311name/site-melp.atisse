@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+For Stripe payments and durable order storage on Vercel, follow [PAIEMENT-EN-LIGNE.md](./PAIEMENT-EN-LIGNE.md).
+
 ## Getting Started
 
 First, run the development server:

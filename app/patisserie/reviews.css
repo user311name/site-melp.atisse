@@ -1,0 +1,5 @@
+.pas-review-modal form select { width:100%; padding:13px 14px; border:1px solid rgba(23,21,20,.17); background:#fffaf4; color:#482516; font:13px 'Lora',Georgia,serif; }
+.pas-review-consent { display:flex!important; grid-template-columns:18px 1fr!important; align-items:flex-start; gap:9px!important; color:#6e533c!important; font-size:12px!important; line-height:1.55!important; letter-spacing:0!important; }
+.pas-review-consent input { width:18px!important; height:18px!important; margin-top:1px; accent-color:#a12a50; }
+.pas-review-modal .pas-submit-review:disabled { opacity:.55; cursor:not-allowed; }
+.pas-review-modal .pas-review-message { padding:11px 13px; background:#faeee3; border-left:3px solid #df805d; color:#603c28; line-height:1.5; }

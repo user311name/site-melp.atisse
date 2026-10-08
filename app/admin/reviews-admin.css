@@ -1,0 +1,11 @@
+.reviews-admin-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.reviews-admin-heading h2 { margin: 0 0 7px; }
+.reviews-admin-heading p { margin: 0; color: #765f4b; font-size: 13px; }
+.reviews-admin-list { display: grid; gap: 10px; margin-top: 16px; }
+.reviews-admin-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 16px; border: 1px solid #ead9c8; background: #fffaf4; }
+.reviews-admin-item > div { display: grid; gap: 7px; min-width: 0; }
+.reviews-admin-item strong { color: #4b2818; }
+.reviews-admin-item small { color: #806149; }
+.reviews-admin-item p { margin: 0; color: #624a35; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.reviews-admin-item .admin-delete { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+@media(max-width:640px) { .reviews-admin-heading, .reviews-admin-item { flex-direction: column; } }

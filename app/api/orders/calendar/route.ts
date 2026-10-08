@@ -1,5 +1,5 @@
 import { isAdminPassword } from "@/lib/site-content";
-import { listOrders } from "@/lib/orders";
+import { listOrders, orderStorageReady } from "@/lib/orders";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,6 +23,7 @@ export async function GET(request: Request) {
   if (!isAdminPassword(request.headers.get("x-melp-admin-password"))) {
     return Response.json({ error: "Accès administrateur refusé." }, { status: 401 });
   }
+  if (!orderStorageReady()) return Response.json({ error: "La base durable des commandes n’est pas configurée sur Vercel." }, { status: 503 });
 
   const parisToday = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
   const orders = (await listOrders()).filter(order => order.status === "confirmed" && order.date && order.date >= parisToday);

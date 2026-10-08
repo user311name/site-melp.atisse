@@ -26,7 +26,14 @@ export type SiteContent = {
   siteMedia: Record<string, string>;
   pages: Record<string, EditablePage>;
   patisserie: { products: PastryProduct[] };
-  schedule: { maxOrdersPerDay: number | null; closedDates: string[] };
+  schedule: {
+    maxOrdersPerDay: number | null;
+    closedDates: string[];
+    openDates: string[];
+    closedRanges: { start: string; end: string }[];
+    closedWeekdays: number[];
+    capacityOverrides: { date: string; maxOrders: number }[];
+  };
   epicerie: {
     eyebrow: string;
     title: string;
@@ -99,7 +106,7 @@ export const defaultContent: SiteContent = {
   siteMedia: {},
   pages: editablePages,
   patisserie: { products: pastryCatalog },
-  schedule: { maxOrdersPerDay: null, closedDates: [] },
+  schedule: { maxOrdersPerDay: null, closedDates: [], openDates: [], closedRanges: [], closedWeekdays: [], capacityOverrides: [] },
   epicerie: {
     eyebrow: "ÉPICERIE GOURMANDE",
     title: "Les petites douceurs",
@@ -154,7 +161,15 @@ export async function readSiteContent(): Promise<SiteContent> {
       })),
       epicerie: { ...defaultContent.epicerie, ...saved.epicerie },
       patisserie: { products: saved.patisserie?.products ?? defaultContent.patisserie.products },
-      schedule: saved.schedule ?? defaultContent.schedule,
+      schedule: {
+        ...defaultContent.schedule,
+        ...saved.schedule,
+        closedDates: Array.isArray(saved.schedule?.closedDates) ? saved.schedule.closedDates : [],
+        openDates: Array.isArray(saved.schedule?.openDates) ? saved.schedule.openDates : [],
+        closedRanges: Array.isArray(saved.schedule?.closedRanges) ? saved.schedule.closedRanges : [],
+        closedWeekdays: Array.isArray(saved.schedule?.closedWeekdays) ? saved.schedule.closedWeekdays : [],
+        capacityOverrides: Array.isArray(saved.schedule?.capacityOverrides) ? saved.schedule.capacityOverrides : [],
+      },
     };
   } catch (error) {
     if (isBlobStorageConfigured()) throw error;

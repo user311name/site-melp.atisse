@@ -532,3 +532,487 @@ html, body { background: var(--melp-cream) !important; color: var(--melp-chocola
 }
 .home-art-note { border-color: rgba(244,93,141,.6) !important; }
 .home-art-note > span, .home-art-note em { color: var(--melp-berry) !important; }
+
+/* Palette refinement requested by Mélissa: deeper chocolate bands, coral warmth and discreet gold details. */
+:root {
+  --melp-chocolate-deep: #4b2d1f;
+  --melp-chocolate-soft: #76503a;
+  --melp-salmon: #eea080;
+  --melp-coral: #df7957;
+  --melp-gold: #c39a57;
+}
+
+.melp-home {
+  --choco: var(--melp-chocolate-deep);
+  --peach: var(--melp-salmon);
+}
+
+.melp-home .home-hero {
+  background:
+    linear-gradient(112deg, transparent 0 57%, rgba(75,45,31,.11) 57% 62%, transparent 62% 73%, rgba(238,160,128,.22) 73% 89%, transparent 89%),
+    radial-gradient(ellipse at 88% 26%, rgba(238,160,128,.24), transparent 32%),
+    #fff9f0 !important;
+}
+
+.melp-home .home-hero-art::before {
+  content: "";
+  position: absolute;
+  inset: 6% -5% -3% 23%;
+  z-index: -1;
+  border-radius: 42% 54% 24% 46% / 32% 27% 60% 64%;
+  background: linear-gradient(145deg, #65432d 0 27%, #e77f5e 27% 59%, #f0a17f 59% 67%, #c39a57 67% 73%, #795137 73% 100%) !important;
+  transform: rotate(7deg);
+}
+
+.melp-home .home-ribbon,
+.melp-home .home-pickup-band {
+  background: linear-gradient(105deg, #4b2d1f, #69432e 52%, #4b2d1f) !important;
+  border-block: 1px solid rgba(195,154,87,.65);
+}
+
+.melp-home .home-ribbon i,
+.melp-home .home-pickup-band > svg {
+  color: #e9c984 !important;
+}
+
+.melp-home .home-offers {
+  background:
+    linear-gradient(108deg, transparent 0 13%, rgba(118,80,58,.045) 13% 16%, transparent 16% 77%, rgba(223,121,87,.075) 77% 82%, transparent 82%),
+    #f1e2d7 !important;
+  border-top: 3px solid var(--melp-coral);
+}
+
+.melp-home .home-story {
+  background: linear-gradient(100deg, #fff9f0 0 70%, #f0dfd1 70% 100%) !important;
+}
+
+.melp-home .story-photo img {
+  box-shadow: 14px 14px 0 rgba(223,121,87,.28), 20px 20px 0 rgba(195,154,87,.18) !important;
+}
+
+.melp-home .service-links {
+  border-top-color: rgba(195,154,87,.7);
+}
+
+.melp-home .service-links > a {
+  border-bottom-color: rgba(118,80,58,.28);
+}
+
+.melp-home .home-stamp,
+.melp-home .home-art-note {
+  border-color: rgba(195,154,87,.85) !important;
+}
+
+.warm-page .warm-hero {
+  background:
+    linear-gradient(108deg, transparent 0 62%, rgba(75,45,31,.045) 62% 66%, transparent 66% 75%, rgba(238,160,128,.16) 75% 91%, transparent 91%),
+    radial-gradient(ellipse at 82% 18%, rgba(238,160,128,.26), transparent 35%),
+    #fff9f0 !important;
+}
+
+.warm-page .warm-content {
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(75,45,31,.035) 8% 9%, transparent 9% 91%, rgba(223,121,87,.06) 91% 94%, transparent 94%),
+    #f4e8d9 !important;
+  border-top: 3px solid var(--melp-gold);
+}
+
+.warm-page .warm-note {
+  border-left-color: var(--melp-coral) !important;
+  box-shadow: inset 0 0 0 1px rgba(195,154,87,.2);
+}
+
+/* Make the requested color bands easy to spot at a glance. */
+.melp-home .home-hero {
+  background:
+    linear-gradient(112deg, transparent 0 54%, rgba(75,45,31,.18) 54% 60%, transparent 60% 70%, rgba(231,127,94,.3) 70% 88%, transparent 88%),
+    radial-gradient(ellipse at 88% 26%, rgba(238,160,128,.3), transparent 32%),
+    #fff9f0 !important;
+}
+
+.melp-home .home-hero-art::before {
+  inset: 4% -8% -5% 22%;
+  background: linear-gradient(145deg, #795238 0 25%, #e77f5e 25% 51%, #f0a17f 51% 68%, #c39a57 68% 74%, #5a3826 74% 100%) !important;
+}
+
+.melp-home .home-offers {
+  border-top: 12px solid transparent !important;
+  border-image: linear-gradient(90deg, #543522 0 42%, #e77f5e 42% 65%, #f0a17f 65% 84%, #c39a57 84% 88%, #ead8c7 88% 100%) 1 !important;
+}
+
+.melp-home .home-story {
+  border-top: 2px solid var(--melp-gold);
+}
+
+/* Carry the same confectionery color rhythm through every public section. */
+main[class*="-page"] section:nth-of-type(odd) {
+  background-image: linear-gradient(112deg, transparent 0 18%, rgba(75,45,31,.1) 18% 21%, transparent 21% 73%, rgba(231,127,94,.17) 73% 79%, transparent 79%) !important;
+  border-top: 5px solid transparent !important;
+  border-image: linear-gradient(90deg, #4b2d1f 0 36%, #e77f5e 36% 61%, #f0a17f 61% 81%, #c39a57 81% 86%, #ead8c7 86% 100%) 1 !important;
+}
+
+main[class*="-page"] section:nth-of-type(even) {
+  background-image: linear-gradient(105deg, transparent 0 12%, rgba(118,80,58,.09) 12% 16%, transparent 16% 82%, rgba(240,161,127,.16) 82% 88%, transparent 88%) !important;
+  border-top: 5px solid transparent !important;
+  border-image: linear-gradient(90deg, #ead8c7 0 14%, #c39a57 14% 19%, #f0a17f 19% 39%, #e77f5e 39% 64%, #4b2d1f 64% 100%) 1 !important;
+}
+
+main[class*="-page"] article,
+main[class*="-page"] .calendar-card,
+main[class*="-page"] .request-form,
+main[class*="-page"] .invitation-card,
+main[class*="-page"] .contact-card,
+main[class*="-page"] .process-card {
+  border-top: 2px solid rgba(223,121,87,.62) !important;
+  box-shadow: 0 12px 35px rgba(75,45,31,.09), inset 0 1px 0 rgba(195,154,87,.28) !important;
+}
+
+.site-footer,
+.contact-footer,
+.footer {
+  border-top: 3px solid var(--melp-gold);
+  background: linear-gradient(108deg, #4b2d1f, #69432e 54%, #4b2d1f) !important;
+}
+
+/* Full-site palette: warm section grounds, visible cocoa/coral abstractions and golden details. */
+main[class*="-page"] section:nth-of-type(odd) {
+  background-color: #fff6eb !important;
+  background-image:
+    linear-gradient(112deg, transparent 0 12%, rgba(91,57,37,.16) 12% 19%, transparent 19% 70%, rgba(231,127,94,.22) 70% 82%, transparent 82%),
+    radial-gradient(ellipse at 94% 14%, rgba(240,161,127,.24), transparent 34%) !important;
+}
+
+main[class*="-page"] section:nth-of-type(even) {
+  background-color: #efddcb !important;
+  background-image:
+    linear-gradient(108deg, transparent 0 9%, rgba(118,80,58,.13) 9% 15%, transparent 15% 78%, rgba(231,127,94,.2) 78% 88%, transparent 88%),
+    radial-gradient(ellipse at 8% 96%, rgba(195,154,87,.19), transparent 30%) !important;
+}
+
+main[class*="-page"] article,
+main[class*="-page"] .calendar-card,
+main[class*="-page"] .request-form,
+main[class*="-page"] .invitation-card,
+main[class*="-page"] .contact-card,
+main[class*="-page"] .process-card,
+main[class*="-page"] .pas-product-card {
+  background: linear-gradient(132deg, #fffaf3 0 74%, #f1c7ad 74% 86%, #dd9a70 86% 89%, #c7a061 89% 91%, #f6e7d7 91% 100%) !important;
+  border: 1px solid rgba(103,67,45,.24) !important;
+  border-top: 3px solid #9a6747 !important;
+  box-shadow: 0 12px 35px rgba(75,45,31,.12), inset 0 1px 0 rgba(195,154,87,.36) !important;
+}
+
+main.warm-page .warm-hero,
+main.chef-page .simple-hero,
+main.patisserie-page .pas-hero,
+main.contact-page .contact-hero,
+main.events-page .events-hero,
+main.reviews-page .reviews-hero,
+main.about-page .values-intro {
+  background-color: #fff6eb !important;
+  background-image:
+    linear-gradient(112deg, transparent 0 55%, rgba(91,57,37,.16) 55% 62%, transparent 62% 70%, rgba(231,127,94,.25) 70% 88%, transparent 88%),
+    radial-gradient(ellipse at 85% 18%, rgba(240,161,127,.3), transparent 34%) !important;
+}
+
+.warm-page .warm-card,
+.warm-page .grocery-card,
+.warm-page .grocery-modal,
+.melp-home .offer-card {
+  background: linear-gradient(135deg, #fffaf3 0 76%, #f3c9ad 76% 87%, #c7a061 87% 90%, #f5e6d7 90% 100%) !important;
+  border: 1px solid rgba(103,67,45,.24) !important;
+  border-top: 3px solid #a16a49 !important;
+}
+
+.warm-page .warm-hero-placeholder,
+.warm-page .grocery-image-placeholder,
+.melp-home .offer-card-visual-placeholder {
+  background: linear-gradient(135deg, #f6e4d1 0 34%, #ed9a77 34% 62%, #f3b692 62% 79%, #c7a061 79% 84%, #f8eadb 84% 100%) !important;
+  color: #56371f !important;
+}
+
+.warm-page .warm-button,
+.melp-home .home-button,
+.melp-home .offer-card-content > b,
+main[class*="-page"] .cta-button,
+main[class*="-page"] .main-button,
+main[class*="-page"] .submit-button {
+  box-shadow: 0 0 0 2px rgba(195,154,87,.55) !important;
+}
+
+.home-kicker i,
+.warm-eyebrow::before,
+.pas-overline::before,
+.section-label::before {
+  background-color: var(--melp-gold);
+}
+
+/* Mobile legibility and wrapping: keep every label and call to action usable. */
+@media (max-width: 560px) {
+  main h1,
+  main h2,
+  main h3,
+  main h4 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  main p,
+  main li,
+  main label,
+  main input,
+  main select,
+  main textarea,
+  main button,
+  main a,
+  main summary,
+  main small,
+  main [class*="eyebrow"],
+  main [class*="kicker"],
+  main [class*="overline"],
+  main [class*="label"],
+  .admin-shell p,
+  .admin-shell label,
+  .admin-shell input,
+  .admin-shell button,
+  .admin-shell a {
+    font-size: max(13px, .9em) !important;
+    line-height: 1.5;
+  }
+
+  .site-header .mobile-navigation-top,
+  .site-header .mobile-navigation-links > a > span {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  .site-footer a,
+  .contact-footer a,
+  .footer a,
+  .home-footer a,
+  .site-footer small,
+  .contact-footer small,
+  .footer small,
+  .home-footer small {
+    font-size: max(12px, .9em) !important;
+    line-height: 1.5;
+  }
+
+  main button,
+  .admin-shell button {
+    min-height: 42px;
+  }
+
+  main a:not(.brand),
+  .admin-shell a {
+    padding-block: 5px;
+  }
+
+  .pas-hero h1 {
+    width: 100%;
+    font-size: clamp(34px, 11.5vw, 42px) !important;
+    line-height: 1.04 !important;
+  }
+
+  .pas-scroll {
+    display: none !important;
+  }
+
+  .reviews-page .review-final h2 {
+    font-size: clamp(30px, 10vw, 38px) !important;
+    line-height: 1.08 !important;
+  }
+
+  .admin-login-card h1 {
+    max-width: 100%;
+    font-size: clamp(26px, 8vw, 32px) !important;
+    overflow-wrap: normal;
+  }
+}
+
+/* Give each service its own restrained colour accents instead of repeating a stripe on every section. */
+main[class*="-page"] > section {
+  background-image: none !important;
+  border-top: 0 !important;
+  border-image: none !important;
+}
+
+.warm-page {
+  --page-accent: #a12a50;
+  --page-warm: #efddcb;
+  --page-ink: #56351f;
+}
+.warm-page-epicerie { --page-accent: #df805d; --page-warm: #f4e2d1; --page-ink: #50311f; }
+.warm-page-ateliers { --page-accent: #c39645; --page-warm: #f4e6d2; --page-ink: #56351f; }
+.warm-page-cartes-cadeaux { --page-accent: #a12a50; --page-warm: #f4dfe1; --page-ink: #56351f; }
+.warm-page-collaborations { --page-accent: #795238; --page-warm: #efe1d2; --page-ink: #4b2d1f; }
+.warm-page-commander { --page-accent: #b55368; --page-warm: #f3e4d7; --page-ink: #4b2d1f; }
+
+.warm-page .warm-hero {
+  background: radial-gradient(ellipse at 88% 18%, color-mix(in srgb, var(--page-accent) 13%, transparent), transparent 34%),
+    linear-gradient(110deg, transparent 0 16%, color-mix(in srgb, var(--page-ink) 8%, transparent) 16% 19%, transparent 19% 100%),
+    #fff8ef !important;
+}
+.warm-page .warm-content {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--page-warm) 72%, #fffaf4), #fffaf4 54%) !important;
+  border-top: 3px solid color-mix(in srgb, var(--page-accent) 65%, #c39a57) !important;
+}
+.warm-page .warm-card,
+.warm-page .managed-page-section,
+.warm-page .grocery-card {
+  background: #fffaf4 !important;
+  border: 1px solid color-mix(in srgb, var(--page-accent) 28%, #e7d6c5) !important;
+  border-top: 4px solid var(--page-accent) !important;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--page-ink) 8%, transparent) !important;
+}
+.warm-page .warm-card:nth-child(3n + 2),
+.warm-page .managed-page-section:nth-child(3n + 2) { border-top-color: #df805d !important; }
+.warm-page .warm-card:nth-child(3n),
+.warm-page .managed-page-section:nth-child(3n) { border-top-color: #c39645 !important; }
+.warm-page .warm-card svg { color: var(--page-accent); }
+.warm-page .warm-eyebrow { color: var(--page-accent) !important; }
+.warm-page .warm-button,
+.warm-page .managed-page-section-link { background: var(--page-accent) !important; }
+
+.melp-home .offer-card {
+  background: #fffaf4 !important;
+  border: 1px solid #e8d8c8 !important;
+  border-top: 4px solid #a12a50 !important;
+}
+.melp-home .offer-card-2 { border-top-color: #df805d !important; }
+.melp-home .offer-card-3 { border-top-color: #795238 !important; }
+.melp-home .offer-card-4 { border-top-color: #c39645 !important; }
+.melp-home .offer-card-2 .offer-icon { color: #c55e46 !important; }
+.melp-home .offer-card-3 .offer-icon { color: #795238 !important; }
+.melp-home .offer-card-4 .offer-icon { color: #9a702d !important; }
+
+.patisserie-page .pas-product-card,
+.patisserie-page .pas-product-card:nth-child(3n + 2) { border-top: 4px solid #a12a50 !important; }
+.patisserie-page .pas-product-card:nth-child(3n + 2) { border-top-color: #df805d !important; }
+.patisserie-page .pas-product-card:nth-child(3n) { border-top-color: #c39645 !important; }
+.patisserie-page .pas-catalogue { background-color: #f3e6d8 !important; }
+.patisserie-page .pas-featured { background-color: #fff8ef !important; }
+.chef-page .experience-card:nth-child(3n + 1) .experience-image { box-shadow: 8px 8px 0 #c39645 !important; }
+.chef-page .experience-card:nth-child(3n + 2) .experience-image { box-shadow: 8px 8px 0 #df805d !important; }
+.chef-page .experience-card:nth-child(3n) .experience-image { box-shadow: 8px 8px 0 #a12a50 !important; }
+.chef-page .process-card:nth-child(3n + 1) { border-top: 4px solid #795238 !important; }
+.chef-page .process-card:nth-child(3n + 2) { border-top: 4px solid #df805d !important; }
+.chef-page .process-card:nth-child(3n) { border-top: 4px solid #c39645 !important; }
+.events-page .events-showcase { background-color: #f4e2d1 !important; }
+.events-page .event-card { background: #fffaf4 !important; }
+.events-page .event-card:nth-child(3n + 1) { border-top: 4px solid #a12a50 !important; }
+.events-page .event-card:nth-child(3n + 2) { border-top: 4px solid #df805d !important; }
+.events-page .event-card:nth-child(3n) { border-top: 4px solid #c39645 !important; }
+.about-page .value-card { background: #fffaf4 !important; }
+.about-page .value-card:nth-child(4n + 1) { border-top: 4px solid #a12a50 !important; }
+.about-page .value-card:nth-child(4n + 2) { border-top: 4px solid #df805d !important; }
+.about-page .value-card:nth-child(4n + 3) { border-top: 4px solid #795238 !important; }
+.about-page .value-card:nth-child(4n) { border-top: 4px solid #c39645 !important; }
+.reviews-page .reviews-grid { background: #f1e2d3 !important; }
+.reviews-page .reviews-empty { border-top: 4px solid #c39645 !important; }
+.contact-page .hero-card:nth-child(4n + 1) { background-color: #a12a50 !important; }
+.contact-page .hero-card:nth-child(4n + 2) { background-color: #795238 !important; }
+.contact-page .hero-card:nth-child(4n + 3) { background-color: #df805d !important; color: #4b2d1f !important; }
+.contact-page .hero-card:nth-child(4n) { background-color: #f0d8bd !important; color: #4b2d1f !important; }
+.contact-page .hero-card:nth-child(4n + 3) .hero-card-content,
+.contact-page .hero-card:nth-child(4n + 3) .hero-card-top,
+.contact-page .hero-card:nth-child(4n + 3) .hero-card-bottom,
+.contact-page .hero-card:nth-child(4n) .hero-card-content,
+.contact-page .hero-card:nth-child(4n) .hero-card-top,
+.contact-page .hero-card:nth-child(4n) .hero-card-bottom { color: #4b2d1f !important; }
+.contact-page .request-section { background-color: #f4e6d8 !important; }
+.contact-page .contact-field:focus-within { border-color: #df805d !important; box-shadow: 0 0 0 3px rgba(223,128,93,.18) !important; }
+
+.order-page .slot-grid button[aria-pressed="true"],
+.warm-page-commander .slot-grid button[aria-pressed="true"] { background: #a12a50 !important; border-color: #c39645 !important; }
+.warm-page-commander .warm-note { border-left: 4px solid #df805d !important; background: #f7e8d8 !important; }
+
+/* Palette MELP: touches cacao, rose, corail et doré, modulées selon chaque rubrique. */
+.melp-home .home-hero {
+  background-image:
+    radial-gradient(ellipse at 83% 20%, rgba(232, 143, 111, .24), transparent 30%),
+    linear-gradient(108deg, transparent 0 61%, rgba(109, 69, 45, .11) 61% 66%, transparent 66% 72%, rgba(240, 190, 137, .22) 72% 89%, transparent 89%) !important;
+}
+.melp-home .home-story { background-image: linear-gradient(110deg, transparent 0 78%, rgba(121, 82, 56, .10) 78% 83%, transparent 83%), radial-gradient(ellipse at 12% 15%, rgba(223,128,93,.12), transparent 32%) !important; }
+.melp-home .home-services { background-image: linear-gradient(105deg, transparent 0 7%, rgba(195,150,69,.11) 7% 8%, transparent 8%), linear-gradient(145deg, #f8eee3, #f3e2d3) !important; }
+.melp-home .offer-card-1 .offer-icon { color: #a12a50 !important; background: #f6dfe5 !important; }
+.melp-home .offer-card-2 .offer-icon { background: #fbe5d9 !important; }
+.melp-home .offer-card-3 .offer-icon { background: #eee0d2 !important; }
+.melp-home .offer-card-4 .offer-icon { background: #f5ebd4 !important; }
+
+.warm-page .warm-content {
+  background-image:
+    linear-gradient(108deg, transparent 0 76%, color-mix(in srgb, var(--page-accent) 10%, transparent) 76% 81%, transparent 81%),
+    radial-gradient(ellipse at 6% 12%, color-mix(in srgb, #df805d 12%, transparent), transparent 33%),
+    linear-gradient(135deg, color-mix(in srgb, var(--page-warm) 62%, #fffaf4), #fffaf4 58%) !important;
+}
+.warm-page .warm-card:nth-child(3n + 1) { background-image: linear-gradient(125deg, transparent 0 93%, rgba(161,42,80,.18) 93%) !important; }
+.warm-page .warm-card:nth-child(3n + 2) { background-image: linear-gradient(125deg, transparent 0 93%, rgba(223,128,93,.24) 93%) !important; }
+.warm-page .warm-card:nth-child(3n) { background-image: linear-gradient(125deg, transparent 0 93%, rgba(195,150,69,.26) 93%) !important; }
+.warm-page .warm-card h3 { color: var(--page-ink) !important; }
+.warm-page .warm-card:nth-child(3n + 2) .warm-cta { color: #ad4d38 !important; }
+.warm-page .warm-card:nth-child(3n) .warm-cta { color: #8a6426 !important; }
+.warm-page .managed-page-section { box-shadow: inset 0 0 0 1px rgba(195,150,69,.16), 0 12px 30px rgba(75,45,31,.07) !important; }
+
+.patisserie-page .pas-featured { background-image: radial-gradient(ellipse at 90% 12%, rgba(223,128,93,.17), transparent 30%), linear-gradient(110deg, transparent 0 79%, rgba(121,82,56,.11) 79% 84%, transparent 84%) !important; }
+.patisserie-page .pas-catalogue { background-image: linear-gradient(108deg, transparent 0 5%, rgba(195,150,69,.12) 5% 6%, transparent 6%), linear-gradient(135deg,#f3e6d8,#f7eee5) !important; }
+.patisserie-page .pas-product-card { border-color: #e6d1c0 !important; box-shadow: 0 14px 28px rgba(75,45,31,.09) !important; }
+.patisserie-page .pas-product-card:nth-child(3n + 1) { background-image: linear-gradient(135deg,#fffaf4 0 91%,#f2d9e0 91%) !important; }
+.patisserie-page .pas-product-card:nth-child(3n + 2) { background-image: linear-gradient(135deg,#fffaf4 0 91%,#f8dfd1 91%) !important; }
+.patisserie-page .pas-product-card:nth-child(3n) { background-image: linear-gradient(135deg,#fffaf4 0 91%,#f1e5c9 91%) !important; }
+
+.chef-page .process-card, .events-page .event-card, .about-page .value-card {
+  border-color: #e6d4c3 !important;
+  box-shadow: 0 12px 28px rgba(75,45,31,.08) !important;
+}
+.chef-page .process-card:nth-child(3n + 1), .events-page .event-card:nth-child(3n + 1), .about-page .value-card:nth-child(4n + 1) { background-image: linear-gradient(135deg,#fffaf4 0 93%,#f2d9e0 93%) !important; }
+.chef-page .process-card:nth-child(3n + 2), .events-page .event-card:nth-child(3n + 2), .about-page .value-card:nth-child(4n + 2) { background-image: linear-gradient(135deg,#fffaf4 0 93%,#f8dfd1 93%) !important; }
+.chef-page .process-card:nth-child(3n), .events-page .event-card:nth-child(3n), .about-page .value-card:nth-child(4n + 3) { background-image: linear-gradient(135deg,#fffaf4 0 93%,#eee0d2 93%) !important; }
+.about-page .value-card:nth-child(4n) { background-image: linear-gradient(135deg,#fffaf4 0 93%,#f1e5c9 93%) !important; }
+.events-page .events-showcase { background-image: linear-gradient(108deg,transparent 0 75%,rgba(223,128,93,.15) 75% 81%,transparent 81%), linear-gradient(135deg,#f4e2d1,#fbf1e8) !important; }
+.reviews-page .reviews-grid { background-image: linear-gradient(108deg,transparent 0 8%,rgba(195,150,69,.14) 8% 9%,transparent 9%), linear-gradient(135deg,#f1e2d3,#f8eee5) !important; }
+
+/* Les cartes de contact reprennent chacune une couleur de la palette sous les photos. */
+.contact-page .hero-card-1 { color: #fff8f0 !important; background-color: #a12a50 !important; }
+.contact-page .hero-card-1 .hero-card-shade { background: linear-gradient(180deg,rgba(123,23,59,.40),rgba(123,23,59,.78)) !important; }
+.contact-page .hero-card-2 { color: #fff8f0 !important; background-color: #795238 !important; }
+.contact-page .hero-card-2 .hero-card-shade { background: linear-gradient(180deg,rgba(80,48,31,.43),rgba(80,48,31,.82)) !important; }
+.contact-page .hero-card-3 { color: #4b2d1f !important; background-color: #df805d !important; }
+.contact-page .hero-card-3 .hero-card-shade { background: linear-gradient(180deg,rgba(251,213,190,.26),rgba(225,139,105,.72)) !important; }
+.contact-page .hero-card-4 { color: #fff8f0 !important; background-color: #795238 !important; }
+.contact-page .hero-card-4 .hero-card-shade { background: linear-gradient(180deg,rgba(83,51,32,.48),rgba(83,51,32,.83)) !important; }
+.contact-page .hero-card-5 { color: #4b2d1f !important; background-color: #f0d8bd !important; }
+.contact-page .hero-card-5 .hero-card-shade { background: linear-gradient(180deg,rgba(250,238,220,.32),rgba(237,204,169,.80)) !important; }
+.contact-page .hero-card-1 .hero-card-bottom, .contact-page .hero-card-2 .hero-card-bottom, .contact-page .hero-card-4 .hero-card-bottom { border-color: rgba(255,248,240,.42) !important; }
+@media (max-width: 560px) {
+  .contact-page .hero-card-content h2 { font-size: 24px !important; line-height: 1 !important; overflow-wrap: normal !important; word-break: normal !important; hyphens: none !important; }
+}
+
+/* Keep the abstract colour marks decorative and slim so they do not compete with the copy. */
+main[class*="-page"] section:nth-of-type(odd) {
+  background-image: radial-gradient(ellipse at 92% 12%, rgba(223,128,93,.14), transparent 28%), linear-gradient(108deg, transparent 0 8%, rgba(121,82,56,.07) 8% 9.5%, transparent 9.5% 100%) !important;
+}
+main[class*="-page"] section:nth-of-type(even) {
+  background-image: radial-gradient(ellipse at 7% 92%, rgba(195,150,69,.13), transparent 24%), linear-gradient(108deg, transparent 0 91%, rgba(223,128,93,.10) 91% 92.5%, transparent 92.5% 100%) !important;
+}
+main.warm-page .warm-hero {
+  background: radial-gradient(ellipse at 88% 18%, color-mix(in srgb,var(--page-accent) 15%,transparent),transparent 31%), linear-gradient(108deg,transparent 0 14%,rgba(121,82,56,.08) 14% 15.5%,transparent 15.5% 100%), #fff8ef !important;
+}
+main.warm-page section.warm-content {
+  background-color: color-mix(in srgb,var(--page-warm) 50%,#fffaf4) !important;
+  background-image: radial-gradient(ellipse at 5% 15%,color-mix(in srgb,#df805d 11%,transparent),transparent 31%),linear-gradient(108deg,transparent 0 91%,color-mix(in srgb,var(--page-accent) 11%,transparent) 91% 92.5%,transparent 92.5%) !important;
+}
+main.patisserie-page .pas-hero,
+main.chef-page .simple-hero,
+main.events-page .events-hero,
+main.reviews-page .reviews-hero,
+main.about-page .values-intro,
+main.contact-page .contact-hero {
+  background-color: #fff7ed !important;
+  background-image: radial-gradient(ellipse at 91% 15%,rgba(223,128,93,.17),transparent 29%),linear-gradient(108deg,transparent 0 11%,rgba(121,82,56,.08) 11% 12.5%,transparent 12.5% 100%) !important;
+}
+main.contact-page section.request-section {
+  background-color: #f4e6d8 !important;
+  background-image: radial-gradient(ellipse at 92% 8%,rgba(223,128,93,.14),transparent 27%),linear-gradient(108deg,transparent 0 7%,rgba(195,150,69,.09) 7% 8.5%,transparent 8.5% 100%) !important;
+}

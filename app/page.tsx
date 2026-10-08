@@ -12,7 +12,7 @@ const offers = [
   { key: "patisserie", mediaId: "home-pastries", title: "Pâtisseries", text: "Des créations de saison, façonnées à la main.", href: "/patisserie", icon: CakeSlice, image: "/images/gateau-framboises-fleurs.png" },
   { key: "epicerie", mediaId: "home-grocery", title: "Épicerie gourmande", text: "De petites douceurs à offrir ou à partager.", href: "/epicerie", icon: Gift, image: "" },
   { key: "cheffe-privee", mediaId: "home-catering", title: "Traiteur & brunch", text: "Dîners, brunchs et réceptions à découvrir.", href: "/cheffe-privee", icon: Utensils, image: "/images/traiteur-planche-festive.png" },
-  { key: "ateliers", mediaId: "home-workshops", title: "Ateliers", text: "Un moment gourmand imaginé chez vous ou à Savenay.", href: "/ateliers", icon: Sparkles, image: "" },
+  { key: "ateliers", mediaId: "home-workshops", title: "Ateliers", text: "Un moment gourmand imaginé chez vous ou à Savenay.", href: "/ateliers", icon: Sparkles, image: "/images/number-cake-choux.png" },
 ];
 
 export default function Home() {

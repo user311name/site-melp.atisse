@@ -10,6 +10,7 @@
 .admin-fields select{width:100%;border:1px solid #e1d1c0;background:#fffefa;padding:12px 13px;color:#523821;font:14px 'DM Sans',Arial,sans-serif;border-radius:4px}
 /* Calendar export controls in the order manager */
 .admin-order-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.admin-payment-amount{display:grid;gap:5px;min-width:142px;color:#76513e;font-size:11px}.admin-payment-amount input{width:100%;padding:9px 10px;border:1px solid #dfcbbc;border-radius:8px;background:#fff;color:#4b2818;font:inherit}.admin-order-actions button:disabled{opacity:.6;cursor:wait}.admin-order-email-payment{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid #c99546;border-radius:24px;color:#76513e;background:#fff9f0;font-size:12px;text-decoration:none;white-space:nowrap}.admin-payment-paid{display:inline-flex;align-items:center;gap:5px;color:#287a55;font-size:12px;font-weight:600}
 @media(max-width:640px){.admin-order-tools{width:100%;align-items:stretch}.admin-order-tools button{justify-content:center;white-space:normal}}
 .schedule-closed-date>label{display:block;margin-bottom:8px;color:#846b51;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
 .schedule-closed-date>div{display:flex;gap:9px;align-items:center;flex-wrap:wrap}

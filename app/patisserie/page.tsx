@@ -4,6 +4,7 @@ import ManagedPageSections from "@/components/ManagedPageSections";
 import { useEffect, useMemo, useState } from "react";
 import { pastryCatalog, type PastryProduct } from "@/lib/pastry-catalog";
 import type { EditablePage } from "@/lib/site-content";
+import type { CustomerReview, ReviewCategory } from "@/lib/reviews";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -16,11 +17,10 @@ import {
 } from "lucide-react";
 import Header from "@/components/Header";
 import "./page.css";
+import "./reviews.css";
 
 
 
-
-const initialReviews: { name: string; rating: number; text: string; date: string }[] = [];
 
 const categories = [
   "Toutes",
@@ -33,18 +33,21 @@ const categories = [
 export default function Patisserie() {
   const [activeCategory, setActiveCategory] = useState("Toutes");
   const [catalog, setCatalog] = useState<PastryProduct[]>(pastryCatalog);
+  const [reviews, setReviews] = useState<CustomerReview[]>([]);
   const [cmsPage, setCmsPage] = useState<EditablePage | null>(null);
   useEffect(() => { fetch("/api/site-content", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((content: { patisserie?: { products?: PastryProduct[] }; pages?: Record<string, EditablePage> } | null) => { if (Array.isArray(content?.patisserie?.products)) setCatalog(content.patisserie.products); if (content?.pages?.patisserie) setCmsPage(content.pages.patisserie); }).catch(() => undefined); }, []);
+  useEffect(() => { fetch("/api/reviews", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then((result: { reviews?: CustomerReview[] } | null) => { if (Array.isArray(result?.reviews)) setReviews(result.reviews); }).catch(() => undefined); }, []);
   const [selectedProduct, setSelectedProduct] =
     useState<PastryProduct | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
-  const reviews = initialReviews;
   const averageRating = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0;
   const [reviewName, setReviewName] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewMessage, setReviewMessage] = useState("");
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewCategory, setReviewCategory] = useState<ReviewCategory>("Pâtisserie");
+  const [reviewConsent, setReviewConsent] = useState(false);
 
   const filteredProducts = useMemo(() => {
     const published = catalog.filter(product => product.name.trim());
@@ -65,21 +68,27 @@ export default function Patisserie() {
     );
   };
 
-  const submitReview = (
+  const submitReview = async (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
 
-    if (!reviewName.trim() || !reviewText.trim()) {
-      setReviewMessage(
-        "Merci de renseigner votre prénom et votre avis.",
-      );
+    if (!reviewName.trim() || reviewText.trim().length < 10 || !reviewConsent) {
+      setReviewMessage("Indiquez votre prénom, un avis d’au moins 10 caractères et acceptez sa publication.");
       return;
     }
-
-    const body = `Prénom : ${reviewName.trim()}\nNote : ${reviewRating}/5\nAvis : ${reviewText.trim()}`;
-    window.location.href = `mailto:melp.atisse.contact@gmail.com?subject=${encodeURIComponent("Avis client · Melp.atisse")}&body=${encodeURIComponent(body)}`;
-    setReviewMessage("Votre messagerie s’ouvre pour envoyer cet avis. Il ne sera publié qu’après validation de Mélissa.");
+    setReviewMessage("");
+    try {
+      const response = await fetch("/api/reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: reviewName, text: reviewText, rating: reviewRating, category: reviewCategory, consent: reviewConsent }) });
+      const result = await response.json().catch(() => null) as { error?: string; message?: string; review?: CustomerReview } | null;
+      if (!response.ok) throw new Error(result?.error || "Impossible d’enregistrer ton avis.");
+      const updated = await fetch("/api/reviews", { cache: "no-store" }).then(value => value.json()) as { reviews?: CustomerReview[] };
+      if (Array.isArray(updated.reviews)) setReviews(updated.reviews);
+      setReviewMessage(result?.message || "Merci ! Votre avis est publié sur le site.");
+      setReviewName(""); setReviewText(""); setReviewRating(5); setReviewCategory("Pâtisserie"); setReviewConsent(false);
+    } catch (error) {
+      setReviewMessage(error instanceof Error ? error.message : "Impossible d’enregistrer ton avis.");
+    }
   };
 
   return (
@@ -357,7 +366,7 @@ export default function Patisserie() {
                   ))}
                 </div>
 
-                <span>{review.date}</span>
+                <time dateTime={review.createdAt}>{new Date(review.createdAt).toLocaleDateString("fr-FR")}</time>
               </div>
 
               <p>“{review.text}”</p>
@@ -814,6 +823,12 @@ export default function Patisserie() {
                 />
               </label>
 
+              <label>Ce dont tu souhaites parler
+                <select value={reviewCategory} onChange={event => setReviewCategory(event.target.value as ReviewCategory)}>
+                  <option>Pâtisserie</option><option>Traiteur</option><option>Atelier</option><option>Autre</option>
+                </select>
+              </label>
+
               <label>
                 Votre note
 
@@ -859,6 +874,8 @@ export default function Patisserie() {
                 />
               </label>
 
+              <label className="pas-review-consent"><input type="checkbox" checked={reviewConsent} onChange={event => setReviewConsent(event.target.checked)} required/><span>J’accepte la publication de mon prénom, de ma note et de mon avis sur ce site.</span></label>
+
               {reviewMessage && (
                 <p className="pas-review-message">
                   {reviewMessage}
@@ -868,8 +885,9 @@ export default function Patisserie() {
               <button
                 type="submit"
                 className="pas-submit-review"
+                disabled={!reviewConsent}
               >
-                Préparer mon avis
+                Publier mon avis
                 <Send size={16} />
               </button>
             </form>
