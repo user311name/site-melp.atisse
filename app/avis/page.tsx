@@ -38,7 +38,7 @@ export default function Avis() {
         <h2>
           Vous avez goûté
           <br />
-          à l'univers
+          à l&apos;univers
           <br />
           <i>MELP.ATISSE ?</i>
         </h2>

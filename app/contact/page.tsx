@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   CakeSlice,
@@ -94,24 +94,33 @@ const bottomCards = [
 
 export default function ContactPage() {
   const cmsPage = useCmsPage("contact");
-  const editablePrestations = cmsPage ? cmsPage.sections.map((section,index) => ({ number: String(index + 1).padStart(2,"0"), title: section.title, description: section.body, image: section.image || prestations[index]?.image || "", icon: prestations[index]?.icon || CakeSlice })) : prestations;
+  const editablePrestations = useMemo(() => cmsPage ? cmsPage.sections.map((section,index) => ({ number: String(index + 1).padStart(2,"0"), title: section.title, description: section.body, image: section.image || prestations[index]?.image || "", icon: prestations[index]?.icon || CakeSlice })) : prestations, [cmsPage]);
   const [selected, setSelected] = useState("Pâtisserie");
   const [sent, setSent] = useState(false);
+  const queryApplied = useRef(false);
 
   useEffect(() => {
+    if (queryApplied.current) return;
     const requested = new URLSearchParams(window.location.search).get("prestation");
+    if (!requested) { queryApplied.current = true; return; }
     const match = editablePrestations.find(item => item.title.toLocaleLowerCase() === requested?.toLocaleLowerCase());
-    if (match) setSelected(match.title);
-  }, []);
+    if (!match) {
+      if (cmsPage) queryApplied.current = true;
+      return;
+    }
+    queryApplied.current = true;
+    if (match.title === selected) return;
+    window.setTimeout(() => setSelected(match.title), 0);
+  }, [cmsPage, editablePrestations, selected]);
 
-  useEffect(() => {
-    if (cmsPage && !cmsPage.sections.some(section => section.title === selected)) setSelected(cmsPage.sections[0]?.title || "");
-  }, [cmsPage]);
+  const selectedPrestation = cmsPage && !cmsPage.sections.some(section => section.title === selected)
+    ? cmsPage.sections[0]?.title || ""
+    : selected;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const details = new FormData(event.currentTarget);
-    details.set("Prestation", selected);
+    details.set("Prestation", selectedPrestation);
     const body = Array.from(details.entries())
       .map(([label, value]) => `${label} : ${value}`)
       .join("\n");
@@ -168,7 +177,7 @@ export default function ContactPage() {
                   key={item.title}
                   type="button"
                   className={`hero-card hero-card-${index + 1} ${
-                    selected === item.title ? "active" : ""
+                    selectedPrestation === item.title ? "active" : ""
                   }`}
                   onClick={() => {
                     setSelected(item.title);
@@ -186,7 +195,7 @@ export default function ContactPage() {
                   <div className="hero-card-top">
                     <span>{item.number}</span>
 
-                    {selected === item.title ? (
+                    {selectedPrestation === item.title ? (
                       <Check size={15} />
                     ) : (
                       <Icon size={17} strokeWidth={1.5} />
@@ -284,10 +293,10 @@ export default function ContactPage() {
               <div>
                 <span>VOTRE PRESTATION</span>
 
-                <strong>{selected}</strong>
+                <strong>{selectedPrestation}</strong>
 
                 <small>
-                  {editablePrestations.find((item) => item.title === selected)
+                  {editablePrestations.find((item) => item.title === selectedPrestation)
                     ?.description || ""}
                 </small>
               </div>
@@ -313,12 +322,12 @@ export default function ContactPage() {
                   <button
                     key={item.title}
                     type="button"
-                    className={selected === item.title ? "selected" : ""}
+                    className={selectedPrestation === item.title ? "selected" : ""}
                     onClick={() => setSelected(item.title)}
                   >
                     {item.title}
 
-                    {selected === item.title && <Check size={14} />}
+                    {selectedPrestation === item.title && <Check size={14} />}
                   </button>
                 ))}
               </div>
@@ -455,7 +464,7 @@ export default function ContactPage() {
         <p>
           Des créations pensées avec soin, de la première idée
           <br />
-          jusqu'au dernier détail.
+          jusqu&apos;au dernier détail.
         </p>
       </section>
 

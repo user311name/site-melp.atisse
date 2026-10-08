@@ -12,6 +12,7 @@ export default function OrderAdmin({ password }: { password: string }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [payingId, setPayingId] = useState("");
+  const [updatingId, setUpdatingId] = useState("");
 
   async function load() {
     setBusy(true);
@@ -34,10 +35,19 @@ export default function OrderAdmin({ password }: { password: string }) {
   }, [password]);
 
   async function update(id: string, status: PickupOrder["status"]) {
-    setMessage("");
-    const response = await fetch("/api/orders/update", { method: "POST", headers: { "Content-Type": "application/json", "x-melp-admin-password": password }, body: JSON.stringify({ id, status }) });
-    const result = await response.json();
-    if (!response.ok) setMessage(result.error ?? "Mise à jour impossible."); else await load();
+    setUpdatingId(id); setMessage("");
+    try {
+      const response = await fetch("/api/orders/update", { method: "POST", headers: { "Content-Type": "application/json", "x-melp-admin-password": password }, body: JSON.stringify({ id, status }) });
+      const result = await response.json();
+      if (!response.ok) {
+        if (result.order) await load();
+        setMessage(result.error ?? "Mise à jour impossible.");
+      } else {
+        await load();
+        setMessage(status === "confirmed" ? result.confirmationEmailSentAt ? "Commande acceptée et e-mail envoyé au client." : "Commande acceptée." : status === "cancelled" ? result.refusalEmailSentAt ? "Demande refusée et e-mail envoyé au client." : "Demande refusée." : "Demande mise à jour.");
+      }
+    } catch { setMessage("La demande n’a pas pu être mise à jour. Vérifie ta connexion et actualise la liste."); }
+    finally { setUpdatingId(""); }
   }
 
   async function createPaymentLink(order: PickupOrder) {
@@ -69,14 +79,16 @@ export default function OrderAdmin({ password }: { password: string }) {
   }
 
   return <section className="admin-loyalty">
-    <div className="admin-products-heading"><div><span className="warm-eyebrow">SUIVI CLIENT</span><h2>Demandes et commandes</h2><p>Les demandes restent à confirmer. Après validation du montant, tu peux créer un lien Stripe pour encaisser la commande.</p></div><div className="admin-order-tools"><button type="button" className="admin-refresh" onClick={() => void exportCalendar()}><Download size={15}/> Télécharger le calendrier (.ics)</button><button type="button" className="admin-refresh" onClick={() => void load()} disabled={busy}><RefreshCw size={15}/> Actualiser</button></div></div>
+    <div className="admin-products-heading"><div><span className="warm-eyebrow">SUIVI CLIENT</span><h2>Demandes et commandes</h2><p>Accepte ou refuse une demande : le client reçoit automatiquement la réponse par e-mail. Après acceptation, tu peux créer son lien Stripe.</p></div><div className="admin-order-tools"><button type="button" className="admin-refresh" onClick={() => void exportCalendar()}><Download size={15}/> Télécharger le calendrier (.ics)</button><button type="button" className="admin-refresh" onClick={() => void load()} disabled={busy}><RefreshCw size={15}/> Actualiser</button></div></div>
     {message && <p role="status" className="admin-loyalty-notice">{message}</p>}
     {orders.length === 0 ? <p className="admin-empty">Aucune demande enregistrée pour le moment.</p> : <div className="admin-order-list">{orders.map(order => {
       const emailBody = `Bonjour ${order.name},\n\nVotre commande Melp.atisse est confirmée. Vous pouvez régler en ligne avec ce lien sécurisé : ${order.stripeCheckoutUrl}\n\nMélissa`;
       return <article className="admin-order" key={order.id}>
-        <div className="admin-order-main"><span>{order.kind === "pickup" ? `Retrait · ${order.date} à ${order.time}` : `Date souhaitée · ${order.date ?? "à préciser"}${order.time ? ` à ${order.time}` : ""}`} · {statusText[order.status]}</span><strong>{order.name || "Créneau en attente"}</strong><span>{order.email} · {order.phone}</span><span>{order.products}</span>{order.notes && <small>Précisions : {order.notes}</small>}<span>Paiement : {order.paymentStatus === "paid" ? "Payé" : order.paymentStatus === "refunded" ? "Remboursé" : order.stripeCheckoutUrl ? `Lien prêt · ${(order.amount ?? 0) / 100} €` : "À régler après confirmation"}</span><a href={`mailto:${encodeURIComponent(order.email)}?subject=${encodeURIComponent("Votre commande Melp.atisse")}`}>Répondre par e-mail</a></div>
+        <div className="admin-order-main"><span>{order.kind === "pickup" ? `Retrait · ${order.date} à ${order.time}` : `Date souhaitée · ${order.date ?? "à préciser"}${order.time ? ` à ${order.time}` : ""}`} · {statusText[order.status]}</span><strong>{order.name || "Créneau en attente"}</strong><span>{order.email} · {order.phone}</span><span>{order.products}</span>{order.notes && <small>Précisions : {order.notes}</small>}<span>Paiement : {order.paymentStatus === "paid" ? "Payé" : order.paymentStatus === "refunded" ? "Remboursé" : order.stripeCheckoutUrl ? `Lien prêt · ${(order.amount ?? 0) / 100} €` : "À régler après confirmation"}</span>{order.status === "confirmed" && <small>{order.confirmationEmailSentAt ? `E-mail d’acceptation envoyé le ${new Date(order.confirmationEmailSentAt).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}.` : "E-mail d’acceptation à envoyer."}</small>}{order.status === "cancelled" && <small>{order.refusalEmailSentAt ? `E-mail de refus envoyé le ${new Date(order.refusalEmailSentAt).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}.` : "E-mail de refus à envoyer."}</small>}<a href={`mailto:${encodeURIComponent(order.email)}?subject=${encodeURIComponent("Votre commande Melp.atisse")}`}>Répondre par e-mail</a></div>
         <div className="admin-order-actions">
-          {order.status === "awaiting_confirmation" && <><button type="button" onClick={() => void update(order.id,"confirmed")}><Check size={14}/> Confirmer</button><button type="button" onClick={() => void update(order.id,"cancelled")}><X size={14}/> Refuser</button></>}
+          {order.status === "awaiting_confirmation" && <><button type="button" disabled={updatingId === order.id} onClick={() => void update(order.id,"confirmed")}><Check size={14}/>{updatingId === order.id ? "Envoi de l’acceptation…" : "Accepter et prévenir par e-mail"}</button><button type="button" disabled={updatingId === order.id} onClick={() => void update(order.id,"cancelled")}><X size={14}/>{updatingId === order.id ? "Envoi du refus…" : "Refuser et prévenir par e-mail"}</button></>}
+          {order.status === "confirmed" && !order.confirmationEmailSentAt && <button type="button" disabled={updatingId === order.id} onClick={() => void update(order.id,"confirmed")}><Check size={14}/>{updatingId === order.id ? "Envoi…" : "Envoyer la confirmation"}</button>}
+          {order.status === "cancelled" && !order.refusalEmailSentAt && <button type="button" disabled={updatingId === order.id} onClick={() => void update(order.id,"cancelled")}><X size={14}/>{updatingId === order.id ? "Envoi…" : "Envoyer le refus"}</button>}
           {order.status === "confirmed" && order.paymentStatus !== "paid" && <>
             <label className="admin-payment-amount">Montant exact à encaisser (€)<input type="number" min="0.50" max="999999.99" step="0.01" inputMode="decimal" placeholder="À valider" value={amounts[order.id] ?? ""} onChange={event => setAmounts(current => ({ ...current, [order.id]: event.target.value }))}/></label>
             <button type="button" disabled={payingId === order.id} onClick={() => void createPaymentLink(order)}>{payingId === order.id ? "Création…" : order.stripeCheckoutUrl ? "Mettre à jour le lien" : "Créer le lien Stripe"}</button>

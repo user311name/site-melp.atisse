@@ -16,14 +16,19 @@ export default function ReviewWall() {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function refresh() {
+  async function loadReviews() {
     const response = await fetch("/api/reviews", { cache: "no-store" });
     const result = await response.json().catch(() => null) as { reviews?: CustomerReview[]; error?: string } | null;
     if (!response.ok) throw new Error(result?.error || "Impossible de charger les avis.");
-    setReviews(Array.isArray(result?.reviews) ? result.reviews : []);
+    return Array.isArray(result?.reviews) ? result.reviews : [];
   }
 
-  useEffect(() => { void refresh().catch(error => setMessage(error instanceof Error ? error.message : "Impossible de charger les avis.")); }, []);
+  async function refresh() { setReviews(await loadReviews()); }
+  useEffect(() => {
+    let active = true;
+    void loadReviews().then(result => { if (active) setReviews(result); }).catch(error => { if (active) setMessage(error instanceof Error ? error.message : "Impossible de charger les avis."); });
+    return () => { active = false; };
+  }, []);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

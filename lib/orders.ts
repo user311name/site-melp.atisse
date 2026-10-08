@@ -7,6 +7,8 @@ import { readSiteContent, type SiteContent } from "@/lib/site-content";
 export type PickupOrder = {
   id: string; kind: "pickup" | "special"; status: "held" | "awaiting_confirmation" | "confirmed" | "completed" | "cancelled";
   createdAt: string; holdExpiresAt?: string; date?: string; time?: string; name: string; email: string; phone: string; products: string; notes: string; amount?: number; paymentStatus: "not_paid" | "paid" | "refunded"; stripeCheckoutSessionId?: string; stripeCheckoutUrl?: string;
+  confirmationEmailSentAt?: string; confirmationEmailId?: string;
+  refusalEmailSentAt?: string; refusalEmailId?: string;
 };
 
 export function isScheduleDateClosed(date: string, schedule: SiteContent["schedule"]) {
@@ -139,6 +141,22 @@ export async function updateOrder(id: string, status: PickupOrder["status"]) {
       if (order.time && active.some(entry => entry.time === order.time)) throw new Error("Un autre retrait ou une demande en attente occupe déjà ce créneau.");
     }
     order.status = status; await writeUnlocked(orders); return order;
+  });
+}
+
+export async function getOrder(id: string) {
+  return (await listOrders()).find(order => order.id === id) ?? null;
+}
+
+export async function markOrderDecisionEmailSent(id: string, status: "confirmed" | "cancelled", emailId: string) {
+  return exclusive(async () => {
+    const orders = await readUnlocked();
+    const order = orders.find(entry => entry.id === id);
+    if (!order || order.status !== status) return null;
+    if (status === "confirmed") Object.assign(order, { confirmationEmailSentAt: new Date().toISOString(), confirmationEmailId: emailId });
+    else Object.assign(order, { refusalEmailSentAt: new Date().toISOString(), refusalEmailId: emailId });
+    await writeUnlocked(orders);
+    return order;
   });
 }
 

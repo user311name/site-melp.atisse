@@ -12,11 +12,17 @@ export default function FidelityAdmin({ password }: { password: string }) {
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState("");
 
-  async function refresh() {
+  async function loadMembers() {
     const response = await fetch("/api/loyalty", { method: "PATCH", headers: { "x-melp-admin-password": password }, cache: "no-store" });
-    if (response.ok) setMembers(await response.json());
+    if (!response.ok) throw new Error("Impossible de charger les cartes de fidélité.");
+    return await response.json() as Member[];
   }
-  useEffect(() => { void refresh(); }, []);
+  async function refresh() { setMembers(await loadMembers()); }
+  useEffect(() => {
+    let active = true;
+    void loadMembers().then(result => { if (active) setMembers(result); }).catch(error => { if (active) setNotice(error instanceof Error ? error.message : "Impossible de charger les cartes de fidélité."); });
+    return () => { active = false; };
+  }, [password]);
 
   async function action(data: Record<string, string>) {
     const response = await fetch("/api/loyalty", { method: "POST", headers: { "Content-Type": "application/json", "x-melp-admin-password": password }, body: JSON.stringify(data) });
