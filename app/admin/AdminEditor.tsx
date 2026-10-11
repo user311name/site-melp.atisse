@@ -192,6 +192,7 @@ export default function AdminEditor() {
 
   function openThemePreview() {
     if (!content) return;
+    sessionStorage.removeItem("melp-site-copy-edit");
     sessionStorage.setItem("melp-admin-password", password);
     sessionStorage.setItem("melp-admin-preview-draft", JSON.stringify(content));
     sessionStorage.removeItem("melp-admin-preview-result");

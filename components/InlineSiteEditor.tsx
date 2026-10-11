@@ -67,7 +67,7 @@ export default function InlineSiteEditor() {
           for (const node of nodes) {
             const parent = node.parentElement;
             const value = node.nodeValue ?? "";
-            if (!parent || !value.trim() || parent.closest("script,style,noscript,svg,textarea,select,option,.admin-shell,.site-inline-toolbar,[aria-hidden='true'],.managed-page-sections,.managed-page-section,.pas-product,.pas-modal,.grocery-card,.value-card,.review-wall-card,.event-card,.experience-card,.hero-card,.about-story,.values-intro,.home-hero,.warm-hero,.pas-hero,.events-hero,.contact-hero,.simple-hero,[contenteditable='true']")) continue;
+            if (!parent || !value.trim() || parent.closest("script,style,noscript,svg,textarea,select,option,.admin-shell,.site-inline-toolbar,.site-theme-preview-toolbar,[aria-hidden='true'],.managed-page-sections,.managed-page-section,.pas-product,.pas-modal,.grocery-card,.value-card,.review-wall-card,.event-card,.experience-card,.hero-card,.about-story,.values-intro,.home-hero,.warm-hero,.pas-hero,.events-hero,.contact-hero,.simple-hero,[contenteditable='true']")) continue;
             if (parent.closest("[data-inline-text-key]")) continue;
             const index = indexes.get(parent) ?? 0;
             indexes.set(parent, index + 1);
@@ -85,7 +85,7 @@ export default function InlineSiteEditor() {
           }
 
           document.querySelectorAll<HTMLAnchorElement>("a[href]").forEach(anchor => {
-            if (anchor.closest(".admin-shell,.site-inline-toolbar,[aria-hidden='true'],.managed-page-sections,.managed-page-section,.pas-product,.pas-modal,.grocery-card,.value-card,.review-wall-card,.event-card,.experience-card,.hero-card,.about-story,.values-intro,.home-hero,.warm-hero,.pas-hero,.events-hero,.contact-hero,.simple-hero")) return;
+            if (anchor.closest(".admin-shell,.site-inline-toolbar,.site-theme-preview-toolbar,[aria-hidden='true'],.managed-page-sections,.managed-page-section,.pas-product,.pas-modal,.grocery-card,.value-card,.review-wall-card,.event-card,.experience-card,.hero-card,.about-story,.values-intro,.home-hero,.warm-hero,.pas-hero,.events-hero,.contact-hero,.simple-hero")) return;
             let key = anchor.dataset.inlineLinkKey;
             if (!key) {
               key = makeKey(anchor, "link");
@@ -104,7 +104,7 @@ export default function InlineSiteEditor() {
 
         clickHandler = event => {
           const target = event.target;
-          if (!(target instanceof Element) || target.closest(".site-inline-toolbar")) return;
+          if (!(target instanceof Element) || target.closest(".site-inline-toolbar,.site-theme-preview-toolbar")) return;
           const span = target.closest<EditableSpan>("[data-inline-text-key]");
           const anchor = target.closest<HTMLAnchorElement>("a[href]");
           if (!span && !anchor) {
