@@ -15,7 +15,7 @@ const fontCategories = ["Toutes", "Serif", "Sans Serif", "Display", "Handwriting
 const safeFontName = (font: string) => /^[\p{L}\p{N} .'-]{1,80}$/u.test(font);
 const googleFontsUrl = (families: string[]) => `https://fonts.googleapis.com/css2?${[...new Set(families.filter(safeFontName))].map(font => `family=${encodeURIComponent(font).replace(/%20/g, "+")}`).join("&")}&display=swap`;
 
-function FontPicker({ id, value, onChange, fonts, loading, unavailable, open, onOpenChange, placeholder = "Rechercher ou saisir une police" }: { id: string; value: string; onChange: (value: string) => void; fonts: FontEntry[]; loading: boolean; unavailable: boolean; open: boolean; onOpenChange: (open: boolean) => void; placeholder?: string }) {
+function FontPicker({ id, fieldLabel, value, onChange, fonts, loading, unavailable, open, onOpenChange, placeholder = "Rechercher ou saisir une police" }: { id: string; fieldLabel: string; value: string; onChange: (value: string) => void; fonts: FontEntry[]; loading: boolean; unavailable: boolean; open: boolean; onOpenChange: (open: boolean) => void; placeholder?: string }) {
   const pickerRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Toutes");
@@ -46,7 +46,7 @@ function FontPicker({ id, value, onChange, fonts, loading, unavailable, open, on
     return () => { link?.remove(); };
   }, [id, value, filtered, limit, open]);
   return <div className="admin-font-picker" ref={pickerRef} data-font-picker={id}>
-    <div className="admin-font-picker-entry"><input aria-label="Police choisie" value={value} onChange={event => onChange(event.target.value)} onFocus={() => onOpenChange(true)} onClick={() => onOpenChange(true)} placeholder={placeholder} maxLength={80} autoComplete="off"/><button type="button" aria-label="Parcourir les polices" aria-expanded={open} onClick={() => onOpenChange(!open)}>⌄</button></div>
+    <div className="admin-font-picker-entry"><input aria-label={`${fieldLabel} — police choisie`} value={value} onChange={event => onChange(event.target.value)} onFocus={() => onOpenChange(true)} onClick={() => onOpenChange(true)} placeholder={placeholder} maxLength={80} autoComplete="off"/><button type="button" aria-label={`Parcourir les polices pour ${fieldLabel}`} aria-expanded={open} onClick={() => onOpenChange(!open)}>⌄</button></div>
     {open && <div className="admin-font-picker-popover">
       <div className="admin-font-current"><span>Police actuellement choisie</span><strong>{value || "Aucune — saisir ou choisir une police"}</strong></div>
       <p className="admin-font-instructions">Choisis une police dans la liste ou saisis son nom dans le champ au-dessus.</p>
@@ -135,7 +135,7 @@ export default function ThemeSettingsAdmin({ design, onChange, onPreview }: Prop
     <div className="admin-theme-heading"><div><span className="warm-eyebrow">IDENTITÉ VISUELLE</span><h2>Personnaliser le site</h2><p>Règle l’ambiance générale, puis ajoute des styles indépendants pour des zones précises. Les réglages s’appliquent sur toutes les pages et tu peux les essayer avant de les publier.</p></div><button type="button" className="admin-secondary admin-theme-preview-button" onClick={onPreview}>Prévisualiser tout le site</button></div>
     <h3>Typographies générales</h3>
     <div className="admin-fields admin-theme-fonts">
-      {fontLabels.map(({ key, label }) => <label key={key}>{label}<FontPicker id={`general-${key}`} open={openFontPickerId === `general-${key}`} onOpenChange={open => setOpenFontPickerId(open ? `general-${key}` : null)} value={design.fonts[key]} onChange={value => updateFont(key, value)} fonts={fonts} loading={loadingFonts} unavailable={fontCatalogUnavailable}/><span className="admin-font-sample" style={{ fontFamily: `"${design.fonts[key].replace(/["\\]/g, "")}", Georgia, serif` }}>Aperçu — La gourmandise à partager</span></label>)}
+      {fontLabels.map(({ key, label }) => <div className="admin-font-field" key={key}><span className="admin-font-field-label">{label}</span><FontPicker id={`general-${key}`} fieldLabel={label} open={openFontPickerId === `general-${key}`} onOpenChange={open => setOpenFontPickerId(open ? `general-${key}` : null)} value={design.fonts[key]} onChange={value => updateFont(key, value)} fonts={fonts} loading={loadingFonts} unavailable={fontCatalogUnavailable}/><span className="admin-font-sample" style={{ fontFamily: `"${design.fonts[key].replace(/["\\]/g, "")}", Georgia, serif` }}>Aperçu — La gourmandise à partager</span></div>)}
     </div>
     <h3 className="admin-theme-colors-title">Palette générale</h3>
     <div className="admin-theme-color-grid">
@@ -157,7 +157,7 @@ export default function ThemeSettingsAdmin({ design, onChange, onPreview }: Prop
           <label>Zone à modifier<select value={rule.target} onChange={event => updatePlacement(rule.id, { target: event.target.value as DesignTarget, selector: "" })}>{placementOptions.map(option => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>
           {rule.target === "custom" && <label>Classe(s) CSS de l’élément<input value={rule.selector} onChange={event => updatePlacement(rule.id, { selector: event.target.value })} placeholder="Ex. .ma-section .ma-carte"/><small>Une ou plusieurs classes commençant par un point. Tu peux les chaîner avec un espace ou le signe &gt;.</small></label>}
           <div className="admin-theme-rule-fields">
-            {target.color && <label>Couleur du texte<input type="color" value={rule.color || "#482516"} onChange={event => updatePlacement(rule.id, { color: event.target.value })}/><button type="button" className="admin-secondary" onClick={() => updatePlacement(rule.id, { color: "" })}>Utiliser la couleur générale</button></label>}
+            {target.color && <div className="admin-theme-rule-control"><label htmlFor={`placement-color-${rule.id}`}>Couleur du texte</label><input id={`placement-color-${rule.id}`} type="color" value={rule.color || "#482516"} onChange={event => updatePlacement(rule.id, { color: event.target.value })}/><button type="button" className="admin-secondary" onClick={() => updatePlacement(rule.id, { color: "" })}>Utiliser la couleur générale</button></div>}
             {target.background && <div className="admin-theme-background">
               <label className="admin-theme-toggle"><input type="checkbox" checked={rule.useGradient} onChange={event => updatePlacement(rule.id, { useGradient: event.target.checked })}/> Utiliser un dégradé</label>
               {rule.useGradient ? <>
@@ -167,7 +167,7 @@ export default function ThemeSettingsAdmin({ design, onChange, onPreview }: Prop
                 <div className="admin-theme-gradient-swatch" style={{ background: `linear-gradient(${rule.gradientAngle}deg,${rule.gradientStart},${rule.gradientEnd})` }}/>
               </> : <label>Couleur de fond<input type="color" value={rule.background || "#fffaf3"} onChange={event => updatePlacement(rule.id, { background: event.target.value })}/></label>}
             </div>}
-            {target.font && <label>Typographie de cette zone<FontPicker id={`placement-${rule.id}`} open={openFontPickerId === `placement-${rule.id}`} onOpenChange={open => setOpenFontPickerId(open ? `placement-${rule.id}` : null)} value={rule.fontFamily} onChange={value => updatePlacement(rule.id, { fontFamily: value })} fonts={fonts} loading={loadingFonts} unavailable={fontCatalogUnavailable} placeholder="Rechercher ou saisir une police"/><button type="button" className="admin-secondary" onClick={() => updatePlacement(rule.id, { fontFamily: "" })}>Utiliser la typographie générale</button></label>}
+            {target.font && <div className="admin-font-field admin-placement-font-field"><span className="admin-font-field-label">Typographie de cette zone</span><FontPicker id={`placement-${rule.id}`} fieldLabel="Typographie de cette zone" open={openFontPickerId === `placement-${rule.id}`} onOpenChange={open => setOpenFontPickerId(open ? `placement-${rule.id}` : null)} value={rule.fontFamily} onChange={value => updatePlacement(rule.id, { fontFamily: value })} fonts={fonts} loading={loadingFonts} unavailable={fontCatalogUnavailable} placeholder="Rechercher ou saisir une police"/><button type="button" className="admin-secondary" onClick={() => updatePlacement(rule.id, { fontFamily: "" })}>Utiliser la typographie générale</button></div>}
           </div>
         </article>;
       })}

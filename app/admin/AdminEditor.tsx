@@ -26,21 +26,34 @@ export default function AdminEditor() {
   useEffect(() => {
     const draft = sessionStorage.getItem("melp-admin-preview-draft");
     const savedPassword = sessionStorage.getItem("melp-admin-password");
-    if (draft && savedPassword) {
-      try {
-        const restored = JSON.parse(draft) as SiteContent;
-        if (restored && restored.design && restored.pages && restored.epicerie) {
-          const query = new URLSearchParams(window.location.search).get("preview");
-          const result = sessionStorage.getItem("melp-admin-preview-result") ?? (query === "published" ? "Design enregistré et publié." : query === "cancelled" ? "Aperçu annulé. Tes réglages sont toujours disponibles dans l’administration." : "");
-          window.setTimeout(() => { setContent(restored); setPassword(savedPassword); setMessage(result); }, 0);
-        }
-      } catch { window.setTimeout(() => setMessage("Les réglages de l’aperçu n’ont pas pu être restaurés. Connecte-toi à nouveau."), 0); }
+    if (!savedPassword) return;
+    const query = new URLSearchParams(window.location.search).get("preview");
+    const result = sessionStorage.getItem("melp-admin-preview-result") ?? (query === "published" ? "Design enregistré et publié." : query === "cancelled" ? "Aperçu annulé. Tes réglages sont toujours disponibles dans l’administration." : "");
+    const clearPreviewSession = () => {
       sessionStorage.removeItem("melp-design-preview-active");
       sessionStorage.removeItem("melp-design-preview");
       sessionStorage.removeItem("melp-admin-preview-draft");
       sessionStorage.removeItem("melp-admin-preview-result");
       sessionStorage.removeItem("melp-admin-password");
+    };
+    if (draft) {
+      try {
+        const restored = JSON.parse(draft) as SiteContent;
+        if (restored?.design && restored?.pages && restored?.epicerie) {
+          window.setTimeout(() => { setContent(restored); setPassword(savedPassword); setMessage(result); }, 0);
+          clearPreviewSession();
+          return;
+        }
+      } catch { /* Recharger le contenu enregistré si le brouillon est illisible. */ }
     }
+    fetch("/api/site-content", { cache: "no-store" }).then(response => {
+      if (!response.ok) throw new Error("Impossible de recharger les réglages.");
+      return response.json() as Promise<SiteContent>;
+    }).then(restored => {
+      window.setTimeout(() => { setContent(restored); setPassword(savedPassword); setMessage(result || "Les réglages enregistrés sont rechargés."); }, 0);
+    }).catch(() => {
+      window.setTimeout(() => setMessage("Les réglages n’ont pas pu être restaurés. Connecte-toi à nouveau."), 0);
+    }).finally(clearPreviewSession);
   }, []);
 
   async function login(event: React.FormEvent<HTMLFormElement>) {
