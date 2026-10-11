@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminPassword, isAllowedContentImage, readSiteContent, writeSiteContent, type SiteContent } from "@/lib/site-content";
 import { siteImageIds } from "@/lib/site-media";
+import { designTargets, isSafeDesignSelector } from "@/lib/site-design";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,45 @@ export async function PUT(request: Request) {
 
   try {
     const content = await request.json() as SiteContent;
+    const validOverrides = (overrides: unknown, maxValueLength: number) => Boolean(overrides && typeof overrides === "object" && !Array.isArray(overrides)
+      && Object.keys(overrides).length <= 2000
+      && Object.entries(overrides).every(([key, value]) => key.length <= 500 && typeof value === "string" && value.length <= maxValueLength));
+    if (!validOverrides(content?.inlineText, 4000) || !validOverrides(content?.inlineLinks, 2000)) {
+      return NextResponse.json({ error: "Les textes ou liens personnalisés sont invalides." }, { status: 400 });
+    }
+    const isAllowedLink = (url: string) => !url || url.startsWith("https://") || url.startsWith("http://") || url.startsWith("mailto:") || url.startsWith("tel:") || url.startsWith("#") || (url.startsWith("/") && !url.startsWith("//"));
+    if (Object.values(content.inlineLinks).some(url => !isAllowedLink(url))) {
+      return NextResponse.json({ error: "Un des liens personnalisés est invalide." }, { status: 400 });
+    }
+    const isValidFont = (font: unknown): font is string => typeof font === "string" && font.length > 0 && font.length <= 80 && /^[\p{L}\p{N} .'-]+$/u.test(font);
+    const requiredFonts = ["title", "subtitle", "minorTitle", "body", "accent", "interface"] as const;
+    const requiredColors = ["background", "section", "surface", "heading", "text", "muted", "accent", "buttonText", "border", "footer"] as const;
+    const design = content?.design;
+    if (!design || !design.fonts || !design.colors
+      || Object.keys(design.fonts).length !== requiredFonts.length
+      || Object.keys(design.colors).length !== requiredColors.length
+      || !Array.isArray(design.placements) || design.placements.length > 100
+      || requiredFonts.some(key => !isValidFont(design.fonts[key]))
+      || requiredColors.some(key => !/^#[0-9a-fA-F]{6}$/.test(design.colors[key]))
+      || Object.values(design.fonts).some(font => !isValidFont(font))
+      || Object.values(design.colors).some(color => typeof color !== "string" || !/^#[0-9a-fA-F]{6}$/.test(color))) {
+      return NextResponse.json({ error: "Les réglages de typographie ou de couleur sont invalides." }, { status: 400 });
+    }
+    const targetIds = new Set(designTargets.map(target => target.id));
+    const optionalHex = (value: unknown) => value === "" || typeof value === "string" && /^#[0-9a-fA-F]{6}$/.test(value);
+    const validPlacements = design.placements.every((placement) => placement && typeof placement === "object"
+      && typeof placement.id === "string" && placement.id.length > 0 && placement.id.length <= 80
+      && targetIds.has(placement.target)
+      && (placement.target !== "custom" || isSafeDesignSelector(placement.selector))
+      && (placement.target === "custom" || placement.selector === "")
+      && optionalHex(placement.color) && optionalHex(placement.background)
+      && /^#[0-9a-fA-F]{6}$/.test(placement.gradientStart) && /^#[0-9a-fA-F]{6}$/.test(placement.gradientEnd)
+      && Number.isInteger(placement.gradientAngle) && placement.gradientAngle >= 0 && placement.gradientAngle <= 360
+      && typeof placement.useGradient === "boolean"
+      && (placement.fontFamily === "" || isValidFont(placement.fontFamily)));
+    if (!validPlacements || new Set(design.placements.map(placement => placement.id)).size !== design.placements.length) {
+      return NextResponse.json({ error: "Une règle de couleur ou de typographie personnalisée est invalide." }, { status: 400 });
+    }
     if (!content?.pages || Object.keys(content.pages).length > 20 || Object.values(content.pages).some(page => !page || typeof page !== "object" || !Array.isArray(page.sections) || page.sections.length > 30) || !content?.epicerie || !Array.isArray(content.epicerie.products) || content.epicerie.products.length > 100 || !content.patisserie || !Array.isArray(content.patisserie.products) || content.patisserie.products.length > 100 || !content.schedule || !Array.isArray(content.schedule.closedDates) || !Array.isArray(content.schedule.openDates) || !Array.isArray(content.schedule.closedRanges) || !Array.isArray(content.schedule.closedWeekdays) || !Array.isArray(content.schedule.capacityOverrides) || !content.siteMedia || typeof content.siteMedia !== "object" || Array.isArray(content.siteMedia) || Object.keys(content.siteMedia).length > siteImageIds.size) {
       return NextResponse.json({ error: "Le contenu envoyé n’est pas valide." }, { status: 400 });
     }
@@ -25,7 +65,6 @@ export async function PUT(request: Request) {
         return NextResponse.json({ error: "La bibliothèque contient une image invalide." }, { status: 400 });
       }
     }
-    const isAllowedLink = (url: string) => !url || url.startsWith("https://") || url.startsWith("mailto:") || url.startsWith("#") || (url.startsWith("/") && !url.startsWith("//"));
     for (const page of Object.values(content.pages)) {
       if (![page.label, page.eyebrow, page.title, page.emphasis, page.intro, page.image, page.imageAlt, page.ctaLabel, page.ctaUrl].every(value => typeof value === "string" && value.length <= 2000) || (page.image && !isAllowedContentImage(page.image)) || !isAllowedLink(page.ctaUrl)) return NextResponse.json({ error: "Une rubrique contient un champ, un lien ou une photo invalide." }, { status: 400 });
       for (const section of page.sections) {

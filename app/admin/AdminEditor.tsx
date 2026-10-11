@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowLeft, ImagePlus, Plus, Save, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ImagePlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { EditablePage, EditableSection, GroceryProduct, SiteContent } from "@/lib/site-content";
 import { pastryCatalog, type PastryProduct } from "@/lib/pastry-catalog";
@@ -12,13 +13,35 @@ import InquiryAdmin from "./InquiryAdmin";
 import ScheduleAdmin from "./ScheduleAdmin";
 import MediaLibraryAdmin from "./MediaLibraryAdmin";
 import ReviewsAdmin from "./ReviewsAdmin";
+import ThemeSettingsAdmin from "./ThemeSettingsAdmin";
 
 export default function AdminEditor() {
+  const router = useRouter();
   const [password, setPassword] = useState("");
   const [content, setContent] = useState<SiteContent | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    const draft = sessionStorage.getItem("melp-admin-preview-draft");
+    const savedPassword = sessionStorage.getItem("melp-admin-password");
+    if (draft && savedPassword) {
+      try {
+        const restored = JSON.parse(draft) as SiteContent;
+        if (restored && restored.design && restored.pages && restored.epicerie) {
+          const query = new URLSearchParams(window.location.search).get("preview");
+          const result = sessionStorage.getItem("melp-admin-preview-result") ?? (query === "published" ? "Design enregistré et publié." : query === "cancelled" ? "Aperçu annulé. Tes réglages sont toujours disponibles dans l’administration." : "");
+          window.setTimeout(() => { setContent(restored); setPassword(savedPassword); setMessage(result); }, 0);
+        }
+      } catch { window.setTimeout(() => setMessage("Les réglages de l’aperçu n’ont pas pu être restaurés. Connecte-toi à nouveau."), 0); }
+      sessionStorage.removeItem("melp-design-preview-active");
+      sessionStorage.removeItem("melp-design-preview");
+      sessionStorage.removeItem("melp-admin-preview-draft");
+      sessionStorage.removeItem("melp-admin-preview-result");
+      sessionStorage.removeItem("melp-admin-password");
+    }
+  }, []);
 
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage("");
@@ -27,7 +50,7 @@ export default function AdminEditor() {
     const dataResponse = await fetch("/api/site-content", { cache: "no-store" });
     if (!dataResponse.ok) { const result = await dataResponse.json().catch(() => null); setMessage(result?.error ?? "Impossible de charger le contenu du site."); setBusy(false); return; }
     const loaded = await dataResponse.json() as SiteContent;
-    setContent({ ...loaded, patisserie: loaded.patisserie ?? { products: pastryCatalog } }); setBusy(false);
+    setContent({ ...loaded, design: loaded.design ?? { fonts: { title: "Cormorant Garamond", subtitle: "Cormorant Garamond", minorTitle: "Cormorant Garamond", body: "Lora", accent: "Dancing Script", interface: "Lora" }, colors: { background: "#fffaf3", section: "#faeddf", surface: "#fffdf9", heading: "#482516", text: "#72503b", muted: "#806149", accent: "#8e173d", buttonText: "#fffaf3", border: "#e5cbb6", footer: "#482516" }, placements: [] }, patisserie: loaded.patisserie ?? { products: pastryCatalog } }); setBusy(false);
   }
 
   function updatePage(field: keyof SiteContent["epicerie"], value: string) {
@@ -148,6 +171,22 @@ export default function AdminEditor() {
     const result = await response.json(); setMessage(response.ok ? "Modifications enregistrées. Les pages et fiches concernées sont mises à jour." : result.error ?? "Enregistrement impossible."); setBusy(false);
   }
 
+  function openVisualEditor() {
+    sessionStorage.setItem("melp-site-copy-edit", "1");
+    sessionStorage.setItem("melp-admin-password", password);
+    router.push("/");
+  }
+
+  function openThemePreview() {
+    if (!content) return;
+    sessionStorage.setItem("melp-admin-password", password);
+    sessionStorage.setItem("melp-admin-preview-draft", JSON.stringify(content));
+    sessionStorage.removeItem("melp-admin-preview-result");
+    sessionStorage.setItem("melp-design-preview", JSON.stringify(content.design));
+    sessionStorage.setItem("melp-design-preview-active", "1");
+    router.push("/");
+  }
+
   function addProduct() {
     const item: GroceryProduct = { id: crypto.randomUUID(), name: "", description: "", composition: "", allergens: "", format: "", price: "", availability: "", image: "", imageAlt: "" };
     setContent(current => current ? { ...current, epicerie: { ...current.epicerie, products: [...current.epicerie.products, item] } } : current);
@@ -159,7 +198,7 @@ export default function AdminEditor() {
 
   if (!content) return <section className="admin-login"><Link href="/" className="admin-back"><ArrowLeft size={16}/> Retour au site</Link><div className="admin-login-card"><span className="warm-eyebrow">MELP.ATISSE · ESPACE PRIVÉ</span><h1>Administration</h1><p>Gère le contenu du site depuis ton téléphone : pages, textes, photos, produits, calendrier et demandes.</p><form onSubmit={login}><label>Mot de passe<input type="password" value={password} onChange={event => setPassword(event.target.value)} required autoComplete="current-password"/></label><button type="submit" disabled={busy}>Ouvrir l’administration</button></form>{message && <p role="status" className="admin-message">{message}</p>}</div></section>;
 
-  return <div className="admin-editor"><header className="admin-topbar"><Link href="/" className="admin-back"><ArrowLeft size={16}/> Voir le site</Link><span>ADMINISTRATION · MELP.ATISSE</span><button type="button" onClick={save} disabled={busy || uploading}><Save size={16}/> Enregistrer</button></header><div className="admin-content"><div className="admin-heading"><span className="warm-eyebrow">CONTENU DU SITE</span><h1>Administration du site</h1><p>Modifie les textes, les photos et les informations produits. Enregistre pour publier les changements sur la page.</p>{message && <p className="admin-feedback" role="status" aria-live="polite">{message}</p>}</div><MediaLibraryAdmin overrides={content.siteMedia} onUpload={(source,file)=>void upload(`media:${source}`,file)} onReset={(source)=>updateMediaOverride(source, "")}/><EditablePageAdmin pages={content.pages} onPageChange={updateManagedPage} onSectionChange={updateManagedSection} onAddSection={addManagedSection} onRemoveSection={removeManagedSection} onUpload={(target,file)=>void upload(target,file)}/><section className="admin-panel"><h2>Présentation</h2><div className="admin-fields"><label>Petit titre<input value={content.epicerie.eyebrow} onChange={event => updatePage("eyebrow", event.target.value)}/></label><label>Titre<input value={content.epicerie.title} onChange={event => updatePage("title", event.target.value)}/></label><label>Fin du titre<input value={content.epicerie.emphasis} onChange={event => updatePage("emphasis", event.target.value)}/></label><label className="admin-wide">Texte d’introduction<textarea rows={3} value={content.epicerie.intro} onChange={event => updatePage("intro", event.target.value)}/></label><div className="admin-upload admin-wide">{content.epicerie.heroImage ? <img src={content.epicerie.heroImage} alt="Aperçu de la photo de bandeau"/> : <div className="admin-upload-empty">Photo à ajouter</div>}<label className="admin-upload-button"><ImagePlus size={16}/> Changer la photo du bandeau<input type="file" accept="image/png,image/jpeg,image/webp" onChange={event => { const file = event.target.files?.[0]; if (file) void upload("__hero__", file); }}/></label><small>JPG, PNG ou WebP · 4 Mo maximum</small></div><label className="admin-wide">Description de la photo<input value={content.epicerie.heroImageAlt} onChange={event => updatePage("heroImageAlt", event.target.value)}/></label></div></section><div className="admin-products-heading"><div><h2>Fiches gourmandes</h2><p>Composition, allergènes, formats et prix s’affichent quand un visiteur ouvre une carte.</p></div><button className="admin-secondary" type="button" onClick={addProduct}><Plus size={16}/> Ajouter une création</button></div>{content.epicerie.products.map((item, index) => <section className="admin-panel admin-product" key={item.id}><div className="admin-product-title"><span>0{index + 1}</span><h3>{item.name || "Nouvelle création"}</h3><button type="button" className="admin-delete" onClick={() => removeProduct(item.id)} aria-label={`Supprimer ${item.name}`}><Trash2 size={16}/></button></div><div className="admin-fields"><label>Nom<input value={item.name} onChange={event => updateProduct(item.id, "name", event.target.value)}/></label><label>Tarif<input value={item.price} onChange={event => updateProduct(item.id, "price", event.target.value)} placeholder="Ex. 32 €"/></label><label className="admin-wide">Description<textarea rows={2} value={item.description} onChange={event => updateProduct(item.id, "description", event.target.value)}/></label><label>Composition<textarea rows={3} value={item.composition} onChange={event => updateProduct(item.id, "composition", event.target.value)}/></label><label>Allergènes<textarea rows={3} value={item.allergens} onChange={event => updateProduct(item.id, "allergens", event.target.value)}/></label><label>Format<input value={item.format} onChange={event => updateProduct(item.id, "format", event.target.value)}/></label><label>Disponibilité / stock<input value={item.availability ?? ""} placeholder="À renseigner" onChange={event => updateProduct(item.id, "availability", event.target.value)}/></label><label>Texte alternatif de la photo<input value={item.imageAlt} onChange={event => updateProduct(item.id, "imageAlt", event.target.value)}/></label><div className="admin-upload">{item.image ? <img src={item.image} alt="Aperçu de la création"/> : <div className="admin-upload-empty">Photo à ajouter</div>}<label className="admin-upload-button"><ImagePlus size={16}/> Choisir une photo<input type="file" accept="image/png,image/jpeg,image/webp" onChange={event => { const file = event.target.files?.[0]; if (file) void upload(item.id, file); }}/></label><small>JPG, PNG ou WebP · 4 Mo maximum</small></div></div></section>)}<div className="admin-save-bottom"><button type="button" onClick={save} disabled={busy || uploading}><Save size={16}/> Enregistrer et publier</button>{message && <p role="status">{message}</p>}</div><PastryAdmin products={content.patisserie.products} onChange={updatePastry} onAdd={addPastry} onRemove={removePastry} onUpload={(id,file)=>void upload(`pastry-${id}`,file)}/><ScheduleAdmin schedule={content.schedule} onCapacity={updateCapacity} onClosedDates={updateClosedDates} onOpenDates={updateOpenDates} onClosedRanges={updateClosedRanges} onClosedWeekdays={updateClosedWeekdays} onCapacityOverrides={updateCapacityOverrides}/><OrderAdmin password={password}/><InquiryAdmin password={password}/><ReviewsAdmin password={password}/><p className="admin-footnote">Pour que les changements et photos restent disponibles sur le site en ligne, un stockage Vercel Blob doit être relié au projet.</p></div></div>;
+  return <div className="admin-editor"><header className="admin-topbar"><Link href="/" className="admin-back"><ArrowLeft size={16}/> Voir le site</Link><span>ADMINISTRATION · MELP.ATISSE</span><button type="button" className="admin-visual-edit" aria-label="Modifier les textes directement sur le site" title="Modifier les textes directement sur le site" onClick={openVisualEditor}><Pencil size={15}/> Modifier les textes sur le site</button><button type="button" onClick={save} disabled={busy || uploading}><Save size={16}/> Enregistrer</button></header><div className="admin-content"><div className="admin-heading"><span className="warm-eyebrow">CONTENU DU SITE</span><h1>Administration du site</h1><p>Modifie les pages, les photos, les produits et les rubriques ici. Pour les textes intégrés aux pages, clique sur « Modifier les textes sur le site », puis sur le texte à changer. Enregistre pour publier.</p>{message && <p className="admin-feedback" role="status" aria-live="polite">{message}</p>}</div><ThemeSettingsAdmin design={content.design} onChange={design => setContent(current => current ? { ...current, design } : current)} onPreview={openThemePreview}/><MediaLibraryAdmin overrides={content.siteMedia} onUpload={(source,file)=>void upload(`media:${source}`,file)} onReset={(source)=>updateMediaOverride(source, "")}/><EditablePageAdmin pages={content.pages} onPageChange={updateManagedPage} onSectionChange={updateManagedSection} onAddSection={addManagedSection} onRemoveSection={removeManagedSection} onUpload={(target,file)=>void upload(target,file)}/><section className="admin-panel"><h2>Présentation</h2><div className="admin-fields"><label>Petit titre<input value={content.epicerie.eyebrow} onChange={event => updatePage("eyebrow", event.target.value)}/></label><label>Titre<input value={content.epicerie.title} onChange={event => updatePage("title", event.target.value)}/></label><label>Fin du titre<input value={content.epicerie.emphasis} onChange={event => updatePage("emphasis", event.target.value)}/></label><label className="admin-wide">Texte d’introduction<textarea rows={3} value={content.epicerie.intro} onChange={event => updatePage("intro", event.target.value)}/></label><div className="admin-upload admin-wide">{content.epicerie.heroImage ? <img src={content.epicerie.heroImage} alt="Aperçu de la photo de bandeau"/> : <div className="admin-upload-empty">Photo à ajouter</div>}<label className="admin-upload-button"><ImagePlus size={16}/> Changer la photo du bandeau<input type="file" accept="image/png,image/jpeg,image/webp" onChange={event => { const file = event.target.files?.[0]; if (file) void upload("__hero__", file); }}/></label><small>JPG, PNG ou WebP · 4 Mo maximum</small></div><label className="admin-wide">Description de la photo<input value={content.epicerie.heroImageAlt} onChange={event => updatePage("heroImageAlt", event.target.value)}/></label></div></section><div className="admin-products-heading"><div><h2>Fiches gourmandes</h2><p>Composition, allergènes, formats et prix s’affichent quand un visiteur ouvre une carte.</p></div><button className="admin-secondary" type="button" onClick={addProduct}><Plus size={16}/> Ajouter une création</button></div>{content.epicerie.products.map((item, index) => <section className="admin-panel admin-product" key={item.id}><div className="admin-product-title"><span>0{index + 1}</span><h3>{item.name || "Nouvelle création"}</h3><button type="button" className="admin-delete" onClick={() => removeProduct(item.id)} aria-label={`Supprimer ${item.name}`}><Trash2 size={16}/></button></div><div className="admin-fields"><label>Nom<input value={item.name} onChange={event => updateProduct(item.id, "name", event.target.value)}/></label><label>Tarif<input value={item.price} onChange={event => updateProduct(item.id, "price", event.target.value)} placeholder="Ex. 32 €"/></label><label className="admin-wide">Description<textarea rows={2} value={item.description} onChange={event => updateProduct(item.id, "description", event.target.value)}/></label><label>Composition<textarea rows={3} value={item.composition} onChange={event => updateProduct(item.id, "composition", event.target.value)}/></label><label>Allergènes<textarea rows={3} value={item.allergens} onChange={event => updateProduct(item.id, "allergens", event.target.value)}/></label><label>Format<input value={item.format} onChange={event => updateProduct(item.id, "format", event.target.value)}/></label><label>Disponibilité / stock<input value={item.availability ?? ""} placeholder="À renseigner" onChange={event => updateProduct(item.id, "availability", event.target.value)}/></label><label>Texte alternatif de la photo<input value={item.imageAlt} onChange={event => updateProduct(item.id, "imageAlt", event.target.value)}/></label><div className="admin-upload">{item.image ? <img src={item.image} alt="Aperçu de la création"/> : <div className="admin-upload-empty">Photo à ajouter</div>}<label className="admin-upload-button"><ImagePlus size={16}/> Choisir une photo<input type="file" accept="image/png,image/jpeg,image/webp" onChange={event => { const file = event.target.files?.[0]; if (file) void upload(item.id, file); }}/></label><small>JPG, PNG ou WebP · 4 Mo maximum</small></div></div></section>)}<div className="admin-save-bottom"><button type="button" onClick={save} disabled={busy || uploading}><Save size={16}/> Enregistrer et publier</button>{message && <p role="status">{message}</p>}</div><PastryAdmin products={content.patisserie.products} onChange={updatePastry} onAdd={addPastry} onRemove={removePastry} onUpload={(id,file)=>void upload(`pastry-${id}`,file)}/><ScheduleAdmin schedule={content.schedule} onCapacity={updateCapacity} onClosedDates={updateClosedDates} onOpenDates={updateOpenDates} onClosedRanges={updateClosedRanges} onClosedWeekdays={updateClosedWeekdays} onCapacityOverrides={updateCapacityOverrides}/><OrderAdmin password={password}/><InquiryAdmin password={password}/><ReviewsAdmin password={password}/><p className="admin-footnote">Pour que les changements et photos restent disponibles sur le site en ligne, un stockage Vercel Blob doit être relié au projet.</p></div></div>;
 }
 
 

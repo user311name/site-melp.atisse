@@ -2,6 +2,7 @@ import AdminEditor from "./AdminEditor";
 import "./admin.css";
 import "./reviews-admin.css";
 import "./schedule-admin.css";
+import "./theme-settings-admin.css";
 
 export const dynamic = "force-dynamic";
 

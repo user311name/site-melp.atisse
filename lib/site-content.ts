@@ -3,6 +3,7 @@ import path from "node:path";
 import { list, put } from "@vercel/blob";
 import { pastryCatalog } from "@/lib/pastry-catalog";
 import type { PastryProduct } from "@/lib/pastry-catalog";
+import type { DesignTarget } from "@/lib/site-design";
 
 export type GroceryProduct = {
   id: string;
@@ -22,7 +23,16 @@ export type EditablePage = { label: string; eyebrow: string; title: string; emph
 
 export type { PastryProduct } from "@/lib/pastry-catalog";
 
+export type SiteDesign = {
+  fonts: { title: string; subtitle: string; minorTitle: string; body: string; accent: string; interface: string };
+  colors: { background: string; section: string; surface: string; heading: string; text: string; muted: string; accent: string; buttonText: string; border: string; footer: string };
+  placements: { id: string; target: DesignTarget; selector: string; color: string; background: string; gradientStart: string; gradientEnd: string; gradientAngle: number; useGradient: boolean; fontFamily: string }[];
+};
+
 export type SiteContent = {
+  design: SiteDesign;
+  inlineText: Record<string, string>;
+  inlineLinks: Record<string, string>;
   siteMedia: Record<string, string>;
   pages: Record<string, EditablePage>;
   patisserie: { products: PastryProduct[] };
@@ -103,6 +113,13 @@ export const editablePages: Record<string, EditablePage> = {
 };
 
 export const defaultContent: SiteContent = {
+  inlineText: {},
+  inlineLinks: {},
+  design: {
+    fonts: { title: "Cormorant Garamond", subtitle: "Cormorant Garamond", minorTitle: "Cormorant Garamond", body: "Lora", accent: "Dancing Script", interface: "Lora" },
+    colors: { background: "#fffaf3", section: "#faeddf", surface: "#fffdf9", heading: "#482516", text: "#72503b", muted: "#806149", accent: "#8e173d", buttonText: "#fffaf3", border: "#e5cbb6", footer: "#482516" },
+    placements: [],
+  },
   siteMedia: {},
   pages: editablePages,
   patisserie: { products: pastryCatalog },
@@ -150,6 +167,13 @@ export async function readSiteContent(): Promise<SiteContent> {
     return {
       ...defaultContent,
       ...saved,
+      inlineText: saved.inlineText && typeof saved.inlineText === "object" && !Array.isArray(saved.inlineText) ? saved.inlineText : {},
+      inlineLinks: saved.inlineLinks && typeof saved.inlineLinks === "object" && !Array.isArray(saved.inlineLinks) ? saved.inlineLinks : {},
+      design: {
+        fonts: { ...defaultContent.design.fonts, ...saved.design?.fonts },
+        colors: { ...defaultContent.design.colors, ...saved.design?.colors },
+        placements: Array.isArray(saved.design?.placements) ? saved.design.placements : [],
+      },
       siteMedia: saved.siteMedia && typeof saved.siteMedia === "object" ? saved.siteMedia : {},
       pages: Object.fromEntries(Object.entries(editablePages).map(([key, page]) => {
         const savedPage = saved.pages?.[key];

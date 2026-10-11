@@ -1,0 +1,145 @@
+/* Réglages de présentation modifiables depuis l’administration. */
+body:not(:has(.admin-shell)) {
+  background: var(--site-color-background, #fffaf3) !important;
+  color: var(--site-color-text, #72503b) !important;
+  font-family: var(--site-font-body, 'Lora', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) .site-header,
+body:not(:has(.admin-shell)) .mobile-navigation {
+  background-color: var(--site-color-background, #fffaf3) !important;
+  color: var(--site-color-text, #72503b) !important;
+  border-color: var(--site-color-border, #e5cbb6) !important;
+}
+
+body:not(:has(.admin-shell)) .site-header a,
+body:not(:has(.admin-shell)) .site-header button,
+body:not(:has(.admin-shell)) .mobile-navigation a,
+body:not(:has(.admin-shell)) .site-footer a {
+  font-family: var(--site-font-interface, 'Lora', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] h1 {
+  color: var(--site-color-heading, #482516) !important;
+  font-family: var(--site-font-title, 'Cormorant Garamond', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] h2,
+body:not(:has(.admin-shell)) main[class][class] h2 {
+  color: var(--site-color-heading, #482516) !important;
+  font-family: var(--site-font-subtitle, 'Cormorant Garamond', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] h3,
+body:not(:has(.admin-shell)) main[class][class] h4 {
+  color: var(--site-color-heading, #482516) !important;
+  font-family: var(--site-font-minor-title, 'Cormorant Garamond', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] p,
+body:not(:has(.admin-shell)) main[class][class] li,
+body:not(:has(.admin-shell)) main[class][class] label {
+  color: var(--site-color-text, #72503b);
+  font-family: var(--site-font-body, 'Lora', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) main :is(h1, h2, h3, h4) em,
+body:not(:has(.admin-shell)) main .warm-eyebrow,
+body:not(:has(.admin-shell)) main [class*="eyebrow"],
+body:not(:has(.admin-shell)) main [class*="kicker"] {
+  color: var(--site-color-accent, #8e173d) !important;
+  font-family: var(--site-font-accent, 'Dancing Script', cursive) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class],
+body:not(:has(.admin-shell)) main[class][class] > section,
+body:not(:has(.admin-shell)) main[class][class] [class*="hero"]:not(img) {
+  background-color: var(--site-color-background, #fffaf3) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] > section:nth-of-type(even),
+body:not(:has(.admin-shell)) main[class][class] [class*="content"],
+body:not(:has(.admin-shell)) main[class][class] [class*="section"]:not([class*="section-title"]) {
+  background-color: var(--site-color-section, #faeddf) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] article,
+body:not(:has(.admin-shell)) main[class][class] [class*="card"],
+body:not(:has(.admin-shell)) main[class][class] [class*="modal"],
+body:not(:has(.admin-shell)) main[class][class] [class*="panel"] {
+  background-color: var(--site-color-surface, #fffdf9) !important;
+  border-color: var(--site-color-border, #e5cbb6) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] button,
+body:not(:has(.admin-shell)) main[class][class] [class*="button"],
+body:not(:has(.admin-shell)) main[class][class] [class*="btn"],
+body:not(:has(.admin-shell)) .header-contact:hover,
+body:not(:has(.admin-shell)) .mobile-menu-button {
+  background-color: var(--site-color-accent, #8e173d) !important;
+  border-color: var(--site-color-accent, #8e173d) !important;
+  color: var(--site-color-button-text, #fffaf3) !important;
+}
+
+body:not(:has(.admin-shell)) main[class][class] :is(input, textarea, select) {
+  background-color: var(--site-color-surface, #fffdf9) !important;
+  border-color: var(--site-color-border, #e5cbb6) !important;
+  color: var(--site-color-text, #72503b) !important;
+}
+
+body:not(:has(.admin-shell)) .site-footer,
+body:not(:has(.admin-shell)) .contact-footer,
+body:not(:has(.admin-shell)) .footer,
+body:not(:has(.admin-shell)) .warm-footer {
+  background-color: var(--site-color-footer, #482516) !important;
+}
+
+body:not(:has(.admin-shell)) :is(.site-footer, .contact-footer, .footer, .warm-footer) :is(a, p, span, small, strong, i) {
+  color: var(--site-color-button-text, #fffaf3) !important;
+  font-family: var(--site-font-interface, 'Lora', Georgia, serif) !important;
+}
+
+body:not(:has(.admin-shell)) main [class*="eyebrow"],
+body:not(:has(.admin-shell)) main small,
+body:not(:has(.admin-shell)) main [class*="muted"] {
+  color: var(--site-color-muted, #806149);
+}
+
+.site-inline-toolbar {
+  position: fixed;
+  z-index: 20000;
+  inset: 12px 12px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 9px 12px;
+  width: fit-content;
+  max-width: calc(100vw - 24px);
+  margin: 0 auto;
+  padding: 11px 14px;
+  border: 1px solid #d9c4ad;
+  border-radius: 12px;
+  background: #fffdf9;
+  color: #482516;
+  box-shadow: 0 12px 35px #2d1b162b;
+  font: 12px/1.4 'DM Sans', Arial, sans-serif;
+}
+.site-inline-toolbar>div{display:grid;gap:2px;max-width:260px}
+.site-inline-toolbar>div strong{font-size:13px}
+.site-inline-toolbar>div span{color:#72503b}
+.site-inline-toolbar>button{padding:9px 13px;border:1px solid #8e173d;border-radius:20px;background:#8e173d;color:#fffaf3;font:600 12px 'DM Sans',Arial,sans-serif;cursor:pointer}
+.site-inline-toolbar>button:disabled{opacity:.65;cursor:wait}
+.site-inline-toolbar>button.site-inline-finish{border-color:#d9c4ad;background:#fff9f0;color:#482516}
+.site-inline-toolbar>p{width:100%;margin:0;color:#72503b;font:12px/1.4 'DM Sans',Arial,sans-serif}
+.site-inline-link-edit{display:grid;gap:3px;color:#72503b;font:10px 'DM Sans',Arial,sans-serif}
+.site-inline-link-edit input{width:min(260px,55vw);padding:8px 9px;border:1px solid #d9c4ad;border-radius:6px;background:white;color:#482516;font:12px 'DM Sans',Arial,sans-serif}
+.site-inline-page-select{display:grid;gap:3px;color:#72503b;font:10px 'DM Sans',Arial,sans-serif}
+.site-inline-page-select select{min-width:135px;padding:8px 9px;border:1px solid #d9c4ad;border-radius:6px;background:white;color:#482516;font:12px 'DM Sans',Arial,sans-serif}
+body:not(:has(.admin-shell)) [data-inline-text-key]{cursor:text}
+body:not(:has(.admin-shell)) [data-inline-text-key]:hover{outline:1px dashed #d49336;outline-offset:2px}
+body:not(:has(.admin-shell)) [data-inline-text-key][contenteditable="true"]{outline:2px solid #d49336;outline-offset:2px;background:#fff4d9;color:#482516!important;cursor:text}
+body:not(:has(.admin-shell)) [data-inline-text-key]:empty::before{content:"Cliquer pour ajouter un texte";color:#9b6b2c;font-style:italic}
+@media(max-width:700px){.site-inline-toolbar{inset:8px 8px auto;gap:7px;justify-content:flex-start;padding:10px}.site-inline-toolbar>div{width:100%;max-width:none}.site-inline-link-edit{flex:1}.site-inline-link-edit input{width:100%}.site-inline-page-select{flex:1}.site-inline-page-select select{width:100%;min-width:0}.site-inline-toolbar>button{flex:1;font-size:11px}}
+.site-theme-preview-toolbar{position:fixed;z-index:20001;inset:12px 12px auto;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px 12px;width:fit-content;max-width:calc(100vw - 24px);margin:0 auto;padding:11px 14px;border:1px solid #d9c4ad;border-radius:12px;background:#fffdf9;color:#482516;box-shadow:0 12px 35px #2d1b162b;font:12px/1.4 'DM Sans',Arial,sans-serif}.site-theme-preview-toolbar>div{display:grid;gap:2px;max-width:280px}.site-theme-preview-toolbar>div span,.site-theme-preview-toolbar>p{color:#72503b}.site-theme-preview-toolbar>button{padding:9px 13px;border:1px solid #8e173d;border-radius:20px;background:#8e173d;color:#fffaf3;font:600 12px 'DM Sans',Arial,sans-serif;cursor:pointer}.site-theme-preview-toolbar>button:disabled{opacity:.65;cursor:wait}.site-theme-preview-toolbar>.site-theme-preview-cancel{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid #d9c4ad;border-radius:20px;background:#fff9f0;color:#482516;text-decoration:none;font:600 12px 'DM Sans',Arial,sans-serif;cursor:pointer}.site-theme-preview-toolbar>p{width:100%;margin:0}.site-theme-published-message{position:fixed;z-index:20001;top:12px;left:50%;transform:translateX(-50%);padding:12px 18px;border:1px solid #d9c4ad;border-radius:10px;background:#fffdf9;color:#482516;box-shadow:0 12px 35px #2d1b162b;font:13px 'DM Sans',Arial,sans-serif}.admin-theme-settings{position:relative}
+@media(max-width:700px){.site-theme-preview-toolbar{inset:8px 8px auto;gap:7px;justify-content:flex-start;padding:10px}.site-theme-preview-toolbar>div{width:100%;max-width:none}.site-theme-preview-toolbar>button{flex:1;font-size:11px}}

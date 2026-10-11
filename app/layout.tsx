@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./brand.css";
+import "./site-theme.css";
 import SiteMediaRuntime from "@/components/SiteMediaRuntime";
 
 export const metadata: Metadata = {
