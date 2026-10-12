@@ -49,6 +49,23 @@ export default function Patisserie() {
   const [reviewCategory, setReviewCategory] = useState<ReviewCategory>("Pâtisserie");
   const [reviewConsent, setReviewConsent] = useState(false);
 
+  useEffect(() => {
+    if (!selectedProduct && !reviewOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedProduct(null);
+        setReviewOpen(false);
+      }
+    };
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [selectedProduct, reviewOpen]);
+
   const filteredProducts = useMemo(() => {
     const published = catalog.filter(product => product.name.trim());
     if (activeCategory === "Toutes") {

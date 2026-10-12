@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, X } from "lucide-react";
 import type { GroceryProduct } from "@/lib/site-content";
 
 export default function EpicerieSelection({ products }: { products: GroceryProduct[] }) {
   const [active, setActive] = useState<GroceryProduct | null>(null);
+  useEffect(() => {
+    if (!active) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setActive(null); };
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", closeOnEscape);
+    return () => { document.body.style.overflow = previousOverflow; document.removeEventListener("keydown", closeOnEscape); };
+  }, [active]);
   return <>
     {products.length === 0 ? <div className="warm-note">La sélection de l’épicerie gourmande sera publiée dès que les produits, photos et tarifs auront été confirmés.</div> : <div className="grocery-grid">
       {products.map((item, index) => (

@@ -65,21 +65,31 @@ export default function Commander() {
   async function chooseSlot(value: string) {
     if (hold) void fetch("/api/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "release", holdId: hold.id }) });
     setSlot(""); setHold(null); setBusy(true); setMessage("");
-    const response = await fetch("/api/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "hold", date, time: value }) });
-    const result = await response.json();
-    if (!response.ok) { setMessage(result.error ?? "Ce créneau n’est plus disponible."); setUnavailable(current => [...current, value]); }
-    else { setSlot(value); setHold(result); }
-    setBusy(false);
+    try {
+      const response = await fetch("/api/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "hold", date, time: value }) });
+      const result = await response.json();
+      if (!response.ok) { setMessage(result.error ?? "Ce créneau n’est plus disponible."); setUnavailable(current => [...current, value]); }
+      else { setSlot(value); setHold(result); }
+    } catch {
+      setMessage("Impossible de vérifier ce créneau. Vérifie ta connexion et réessaie.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const formElement = event.currentTarget; setBusy(true); setMessage("");
     const form = new FormData(formElement);
-    const response = await fetch("/api/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "submit", kind: special ? "special" : "pickup", holdId: hold?.id, specialDate: form.get("specialDate"), specialTime: form.get("specialTime"), firstName: form.get("firstName"), lastName: form.get("lastName"), email: form.get("email"), phone: form.get("phone"), products: form.get("products"), notes: form.get("notes") }) });
-    const result = await response.json();
-    if (response.ok) { setMessage(`Demande enregistrée. Référence : ${result.id.slice(0, 8).toUpperCase()}. ${result.message}`); setHold(null); setSlot(""); formElement.reset(); setCreation(""); }
-    else setMessage(result.error ?? "L’envoi a échoué. Réessaie.");
-    setBusy(false);
+    try {
+      const response = await fetch("/api/orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "submit", kind: special ? "special" : "pickup", holdId: hold?.id, specialDate: form.get("specialDate"), specialTime: form.get("specialTime"), firstName: form.get("firstName"), lastName: form.get("lastName"), email: form.get("email"), phone: form.get("phone"), products: form.get("products"), notes: form.get("notes") }) });
+      const result = await response.json();
+      if (response.ok) { setMessage(`Demande enregistrée. Référence : ${result.id.slice(0, 8).toUpperCase()}. ${result.message}`); setHold(null); setSlot(""); formElement.reset(); setCreation(""); }
+      else setMessage(result.error ?? "L’envoi a échoué. Réessaie.");
+    } catch {
+      setMessage("Impossible d’envoyer la demande. Vérifie ta connexion et réessaie.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   function changeDate(value: string) {

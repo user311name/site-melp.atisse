@@ -58,12 +58,18 @@ export default function AdminEditor() {
 
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setMessage("");
-    const response = await fetch("/api/admin-login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-    if (!response.ok) { setMessage("Mot de passe incorrect ou accès administrateur non configuré."); setBusy(false); return; }
-    const dataResponse = await fetch("/api/site-content", { cache: "no-store" });
-    if (!dataResponse.ok) { const result = await dataResponse.json().catch(() => null); setMessage(result?.error ?? "Impossible de charger le contenu du site."); setBusy(false); return; }
-    const loaded = await dataResponse.json() as SiteContent;
-    setContent({ ...loaded, design: loaded.design ?? { fonts: { title: "Cormorant Garamond", subtitle: "Cormorant Garamond", minorTitle: "Cormorant Garamond", body: "Lora", accent: "Dancing Script", interface: "Lora" }, colors: { background: "#fffaf3", section: "#faeddf", surface: "#fffdf9", heading: "#482516", text: "#72503b", muted: "#806149", accent: "#8e173d", buttonText: "#fffaf3", border: "#e5cbb6", footer: "#482516" }, placements: [] }, patisserie: loaded.patisserie ?? { products: pastryCatalog } }); setBusy(false);
+    try {
+      const response = await fetch("/api/admin-login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
+      if (!response.ok) { setMessage("Mot de passe incorrect ou accès administrateur non configuré."); return; }
+      const dataResponse = await fetch("/api/site-content", { cache: "no-store" });
+      if (!dataResponse.ok) { const result = await dataResponse.json().catch(() => null); setMessage(result?.error ?? "Impossible de charger le contenu du site."); return; }
+      const loaded = await dataResponse.json() as SiteContent;
+      setContent({ ...loaded, design: loaded.design ?? { fonts: { title: "Cormorant Garamond", subtitle: "Cormorant Garamond", minorTitle: "Cormorant Garamond", body: "Lora", accent: "Dancing Script", interface: "Lora" }, colors: { background: "#fffaf3", section: "#faeddf", surface: "#fffdf9", heading: "#482516", text: "#72503b", muted: "#806149", accent: "#8e173d", buttonText: "#fffaf3", border: "#e5cbb6", footer: "#482516" }, placements: [] }, patisserie: loaded.patisserie ?? { products: pastryCatalog } });
+    } catch {
+      setMessage("Impossible de joindre l’administration. Vérifie ta connexion et réessaie.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   function updatePage(field: keyof SiteContent["epicerie"], value: string) {
@@ -180,8 +186,15 @@ export default function AdminEditor() {
   async function save() {
     if (!content) return;
     setBusy(true); setMessage("");
-    const response = await fetch("/api/site-content", { method: "PUT", headers: { "Content-Type": "application/json", "x-melp-admin-password": password }, body: JSON.stringify(content) });
-    const result = await response.json(); setMessage(response.ok ? "Modifications enregistrées. Les pages et fiches concernées sont mises à jour." : result.error ?? "Enregistrement impossible."); setBusy(false);
+    try {
+      const response = await fetch("/api/site-content", { method: "PUT", headers: { "Content-Type": "application/json", "x-melp-admin-password": password }, body: JSON.stringify(content) });
+      const result = await response.json().catch(() => null) as { error?: string } | null;
+      setMessage(response.ok ? "Modifications enregistrées. Les pages et fiches concernées sont mises à jour." : result?.error ?? "Enregistrement impossible.");
+    } catch {
+      setMessage("Impossible d’enregistrer les modifications. Vérifie ta connexion et réessaie.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   function openVisualEditor() {

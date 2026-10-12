@@ -103,8 +103,13 @@ export default function InlineSiteEditor() {
         observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["aria-hidden"] });
 
         clickHandler = event => {
+          // The capture listener must be completely inert unless copy editing
+          // was explicitly enabled by the administrator. Otherwise it blocks
+          // every public link and button before React can handle the click.
+          if (!enabled) return;
           const target = event.target;
           if (!(target instanceof Element) || target.closest(".site-inline-toolbar,.site-theme-preview-toolbar")) return;
+          if (target.closest(".mobile-menu-button")) return;
           const span = target.closest<EditableSpan>("[data-inline-text-key]");
           const anchor = target.closest<HTMLAnchorElement>("a[href]");
           if (!span && !anchor) {
