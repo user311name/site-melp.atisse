@@ -13,8 +13,6 @@ const links = [
   ["Événements", "/evenements"],
   ["Avis", "/avis"],
   ["À propos", "/a-propos"],
-  ["Commander", "/commander"],
-  ["Cartes cadeaux", "/cartes-cadeaux"],
   ["Collaborations", "/collaborations"],
 ] as const;
 
